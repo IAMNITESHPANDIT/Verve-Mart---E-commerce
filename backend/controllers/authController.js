@@ -1,11 +1,17 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { User } = require("../sequelize/index");
-const { jwtSecret } = require("../config/config");
+require("dotenv").config();
+const jwtSecret = process.env.JWT_SECRET;
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Check if required fields are present
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email or password is missing" });
+    }
 
     // Find the user by email
     const user = await User.findOne({ where: { email } });
@@ -35,10 +41,15 @@ exports.signup = async (req, res) => {
   try {
     const { name, phoneNumber, email, password } = req.body;
 
+    // Check if required fields are present
+    if (!name || !phoneNumber || !email || !password) {
+      return res.status(400).json({ error: "Required fields are missing" });
+    }
+
     // Check if the email is already registered
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already registered" });
+      return res.status(400).json({ error: "Email is already registered" });
     }
 
     // Hash the password

@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     phoneNumber: DataTypes.STRING,
     email: DataTypes.STRING,
+    password: DataTypes.STRING, // Added password field
     registrationNumber: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,

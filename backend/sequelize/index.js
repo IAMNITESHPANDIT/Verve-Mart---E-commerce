@@ -12,13 +12,14 @@ const ReturnModel = require("../models/return");
 const ReturnLineItemModel = require("../models/returnLineItem");
 
 // Create an instance of Sequelize
+
 const sequelize = new Sequelize(
-  databaseConfig.database,
-  databaseConfig.username,
-  databaseConfig.password,
+  databaseConfig.DB_NAME,
+  databaseConfig.DB_USER,
+  databaseConfig.DB_PASSWORD,
   {
-    host: databaseConfig.host,
-    dialect: databaseConfig.dialect,
+    host: "localhost",
+    dialect: databaseConfig.DB_DIALECT,
   }
 );
 
