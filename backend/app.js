@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const { sequelize } = require("./sequelize/index");
+const itemRoutes = require("./routes/itemRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const PORTNUMBER = 3000;
@@ -12,6 +13,7 @@ app.use(express.json());
 // Routes
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/items", itemRoutes);
 
 // Sync the models with the database and start the server
 sequelize
