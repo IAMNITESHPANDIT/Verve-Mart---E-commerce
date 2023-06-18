@@ -5,12 +5,57 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 // Define item routes
 
-router.get("/", authMiddleware.authenticateUser, itemController.getAllItems);
+//public routes:-
+router.get("/", itemController.getAllItems);
 
-router.get("/", authMiddleware.authenticateUser, itemController.getAllItems);
-router.get("/:id", authMiddleware.authenticateUser, itemController.getItemById);
-router.post("/", authMiddleware.authenticateUser, itemController.createItem);
+router.get("/:id", itemController.getItemById);
+
+//cart routes by user
+
+// Protected routes for authenticated user
+
+// Add item to cart
+
+router.post(
+  "/cart",
+  authMiddleware.authenticateUser,
+  itemController.addItemToCart
+);
+
+// Update item in cart
+router.put(
+  "/cart/:id",
+  authMiddleware.authenticateUser,
+  itemController.updateCartItem
+);
+
+// Delete item from cart
+router.delete(
+  "/cart/:id",
+  authMiddleware.authenticateUser,
+  itemController.deleteCartItem
+);
+
+// Update item stock
+router.put(
+  "/:id/stock",
+  authMiddleware.isAdmin,
+  itemController.updateItemStock
+);
+
+// Fetch existing items
+router.get(
+  "/items",
+  authMiddleware.authenticateUser,
+  itemController.fetchExistingItems
+);
+
+//protected routes:- update|| delete by admin
+
+router.post("/", authMiddleware.isAdmin, itemController.createItem);
+
 router.put("/:id", authMiddleware.authenticateUser, itemController.updateItem);
+
 router.delete(
   "/:id",
   authMiddleware.authenticateUser,

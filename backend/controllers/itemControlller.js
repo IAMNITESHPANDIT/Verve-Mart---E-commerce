@@ -1,9 +1,9 @@
-const { Item } = require("../sequelize/index");
+const CartItem = require("../models/CartItem");
+const { Item, cartItem } = require("../sequelize/index");
 
 exports.getAllItems = async (req, res) => {
   try {
-    const user = req.user;
-    const items = await Item.findAll({ where: { UserId: user.id } });
+    const items = await Item.findAll();
     if (items.length === 0) {
       return res.status(200).json({ message: "No items found" });
     }
@@ -65,7 +65,6 @@ exports.createItem = async (req, res) => {
       return res.status(400).json({ error: "Invalid data types" });
     }
 
-    const user = req.user;
     const item = await Item.create({
       sku,
       itemName,
@@ -76,7 +75,6 @@ exports.createItem = async (req, res) => {
       reviewStars,
       size,
       color,
-      UserId: user.id,
       image,
     });
 
@@ -146,5 +144,161 @@ exports.deleteItem = async (req, res) => {
     // Handle error
     console.log("Delete item error: ", error);
     res.status(500).json({ error: "Failed to delete item" });
+  }
+};
+
+// for user cart items
+
+// Fetch existing items
+
+exports.fetchExistingItems = async (req, res) => {
+  try {
+    const user = req.user;
+    const items = await Item.findAll({ where: { UserId: user.id } });
+
+    if (items.length === 0) {
+      return res.status(200).json({ message: "No items found" });
+    }
+
+    res.json(items);
+  } catch (error) {
+    console.log("Error retrieving existing items: ", error);
+    res.status(500).json({ error: "Failed to retrieve existing items" });
+  }
+};
+
+// Add item to cart
+exports.addItemToCart = async (req, res) => {
+  try {
+    const { itemId, userId } = req.body;
+
+    const item = await Item.findOne({
+      where: {
+        itemId: itemId,
+      },
+    });
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    // Check if the item is already in the user's cart
+    const existingItem = await cartItem.findOne({
+      where: { itemId, userId },
+    });
+
+    if (existingItem) {
+      // If the item already exists in the cart, increment the quantity
+      existingItem.quantity += 1;
+      await existingItem.save(); // Save the updated cart item
+      return res.json({
+        message: "Item Updated to cart successfully",
+        data: existingItem,
+      });
+    } else {
+      // If the item doesn't exist in the cart, create a new cart item
+      await cartItem.create({ itemId, userId });
+      res.json({ message: "Item added to cart successfully" });
+    }
+  } catch (error) {
+    console.log("Error adding item to cart: ", error);
+    res.status(500).json({ error: "Failed to add item to cart" });
+  }
+};
+
+// Delete item from cart
+exports.deleteCartItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    // Find the cart item
+    const cartItem = await CartItem.findOne({
+      where: { id, userId: user.id },
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
+    // Remove the cart item from the user's cart
+    await cartItem.destroy();
+
+    res.json({ message: "Cart item deleted successfully" });
+  } catch (error) {
+    console.log("Error deleting cart item: ", error);
+    res.status(500).json({ error: "Failed to delete cart item" });
+  }
+};
+
+// ...
+
+// Update item in cart
+exports.updateCartItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const user = req.user;
+
+    // Find the cart item
+    const cartItem = user.getCartItem(id);
+
+    if (!cartItem) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
+    // Update the quantity of the cart item
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    res.json({ message: "Cart item updated successfully" });
+  } catch (error) {
+    console.log("Error updating cart item: ", error);
+    res.status(500).json({ error: "Failed to update cart item" });
+  }
+};
+
+// Delete item from cart
+exports.deleteCartItem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = req.user;
+
+    // Find the cart item
+    const cartItem = user.getCartItem(id);
+
+    if (!cartItem) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
+    // Remove the cart item from the user's cart
+    await user.removeCartItem(cartItem);
+
+    res.json({ message: "Cart item deleted successfully" });
+  } catch (error) {
+    console.log("Error deleting cart item: ", error);
+    res.status(500).json({ error: "Failed to delete cart item" });
+  }
+};
+
+// Update item stock
+exports.updateItemStock = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { stock } = req.body;
+    const item = await Item.findByPk(id);
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    // Update the item stock
+    item.stock = stock;
+    await item.save();
+
+    res.json({ message: "Item stock updated successfully" });
+  } catch (error) {
+    console.log("Error updating item stock: ", error);
+    res.status(500).json({ error: "Failed to update item stock" });
   }
 };

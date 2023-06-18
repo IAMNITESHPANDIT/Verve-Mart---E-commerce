@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     UserId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     sku: DataTypes.STRING,
     itemName: DataTypes.STRING,

@@ -4,7 +4,47 @@ const { User } = require("../sequelize/index");
 require("dotenv").config();
 const jwtSecret = process.env.JWT_SECRET;
 
-exports.login = async (req, res) => {
+//Login and Register role with password - admin
+
+exports.registerAdmin = async (req, res) => {
+  try {
+    const { name, email, password, phoneNumber } = req.body;
+
+    // Check if the email is already registered
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email is already registered" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create the admin user with the provided data
+    const adminUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: "admin",
+      phoneNumber,
+    });
+
+    // Generate a JWT token with the user's information
+    const token = jwt.sign(
+      { userId: adminUser.userId, role: adminUser.role },
+      jwtSecret
+    );
+
+    res.status(201).json({
+      message: "Admin user registered successfully",
+      data: adminUser,
+      token: token,
+    });
+  } catch (error) {
+    console.log("Error registering admin user: ", error);
+    res.status(500).json({ error: "Failed to register admin user" });
+  }
+};
+
+exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -37,7 +77,42 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.signup = async (req, res) => {
+exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if required fields are present
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email or password is missing" });
+    }
+
+    // Find the user by email
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // Compare the password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign({ userId: user.dataValues.userId }, jwtSecret, {
+      expiresIn: "1h",
+    });
+
+    // Return the user and token
+    res.json({ user, token });
+  } catch (error) {
+    // Handle login error
+    console.log("Login error: ", error);
+    res.status(500).json({ error: "Failed to log in" });
+  }
+};
+
+exports.signupUser = async (req, res) => {
   try {
     const { name, phoneNumber, email, password } = req.body;
 

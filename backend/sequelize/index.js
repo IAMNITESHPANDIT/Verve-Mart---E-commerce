@@ -10,6 +10,7 @@ const OrderItemModel = require("../models/orderItem");
 const PaymentModel = require("../models/payment");
 const ReturnModel = require("../models/return");
 const ReturnLineItemModel = require("../models/returnLineItem");
+const CartItem = require("../models/CartItem");
 
 // Create an instance of Sequelize
 
@@ -34,6 +35,7 @@ const OrderItem = OrderItemModel(sequelize, Sequelize);
 const Payment = PaymentModel(sequelize, Sequelize);
 const Return = ReturnModel(sequelize, Sequelize);
 const ReturnLineItem = ReturnLineItemModel(sequelize, Sequelize);
+const cartItem = CartItem(sequelize, Sequelize);
 
 // Establish the associations between the models
 User.hasOne(Account);
@@ -76,4 +78,5 @@ module.exports = {
   Payment,
   Return,
   ReturnLineItem,
+  cartItem,
 };
