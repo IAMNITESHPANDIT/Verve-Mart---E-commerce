@@ -1,3 +1,4 @@
+const { cartItem } = require("../sequelize");
 const CartItem = require("./CartItem");
 
 module.exports = (sequelize, DataTypes) => {
@@ -23,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   User.prototype.getCartItem = async function (itemId) {
-    const cartItem = await CartItem.findOne({
+    const cart = await cartItem.findOne({
       where: { itemId, userId: this.id },
     });
-    return cartItem;
+    return cart;
   };
 
   User.prototype.removeCartItem = async function (cartItem) {

@@ -147,9 +147,7 @@ exports.deleteItem = async (req, res) => {
   }
 };
 
-// for user cart items
-
-// Fetch existing items
+// for cart Items
 
 exports.fetchExistingItems = async (req, res) => {
   try {
@@ -209,20 +207,20 @@ exports.addItemToCart = async (req, res) => {
 // Delete item from cart
 exports.deleteCartItem = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = req.user;
+    const { itemId, userId } = req.body;
 
+    console.log("itemID ", itemId, userId);
     // Find the cart item
-    const cartItem = await CartItem.findOne({
-      where: { id, userId: user.id },
+    const existingItem = await cartItem.findOne({
+      where: { itemId: itemId, userId: userId },
     });
 
-    if (!cartItem) {
+    if (!existingItem) {
       return res.status(404).json({ error: "Cart item not found" });
     }
 
     // Remove the cart item from the user's cart
-    await cartItem.destroy();
+    await existingItem.destroy();
 
     res.json({ message: "Cart item deleted successfully" });
   } catch (error) {
@@ -230,8 +228,6 @@ exports.deleteCartItem = async (req, res) => {
     res.status(500).json({ error: "Failed to delete cart item" });
   }
 };
-
-// ...
 
 // Update item in cart
 exports.updateCartItem = async (req, res) => {
@@ -255,29 +251,6 @@ exports.updateCartItem = async (req, res) => {
   } catch (error) {
     console.log("Error updating cart item: ", error);
     res.status(500).json({ error: "Failed to update cart item" });
-  }
-};
-
-// Delete item from cart
-exports.deleteCartItem = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const user = req.user;
-
-    // Find the cart item
-    const cartItem = user.getCartItem(id);
-
-    if (!cartItem) {
-      return res.status(404).json({ error: "Cart item not found" });
-    }
-
-    // Remove the cart item from the user's cart
-    await user.removeCartItem(cartItem);
-
-    res.json({ message: "Cart item deleted successfully" });
-  } catch (error) {
-    console.log("Error deleting cart item: ", error);
-    res.status(500).json({ error: "Failed to delete cart item" });
   }
 };
 

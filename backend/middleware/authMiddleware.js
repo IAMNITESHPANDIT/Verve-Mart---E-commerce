@@ -12,7 +12,6 @@ exports.authenticateUser = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, jwtSecret);
     const userId = decoded.userId;
-    console.log("userId", decoded);
     const user = await User.findByPk(userId);
 
     if (!user) {

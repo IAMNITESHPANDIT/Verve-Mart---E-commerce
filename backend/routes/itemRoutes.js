@@ -31,7 +31,7 @@ router.put(
 
 // Delete item from cart
 router.delete(
-  "/cart/:id",
+  "/cart",
   authMiddleware.authenticateUser,
   itemController.deleteCartItem
 );
