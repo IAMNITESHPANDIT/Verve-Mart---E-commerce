@@ -12,4 +12,8 @@ router.post("/register", authController.signupUser);
 router.post("/loginAdmin", authController.loginAdmin);
 router.post("/registerAdmin", authController.registerAdmin);
 
+// logout admin and user if exists
+
+router.get("/logout", authController.logoutUser);
+
 module.exports = router;

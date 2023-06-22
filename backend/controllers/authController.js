@@ -66,7 +66,9 @@ exports.loginAdmin = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: "1h" });
+    const token = jwt.sign({ userId: user.dataValues.userId }, jwtSecret, {
+      expiresIn: "1h",
+    });
 
     // Return the user and token
     res.json({ user, token });
@@ -149,5 +151,31 @@ exports.signupUser = async (req, res) => {
     // Handle registration error
     console.log("User registration error: ", error);
     res.status(500).json({ error: "Failed to register user" });
+  }
+};
+
+exports.logoutUser = async (req, res) => {
+  // const token = req.cookies.token; // Assuming the token is stored in a cookie
+  const token = req.header("Authorization");
+
+  // Verify the token and extract the user/admin ID
+  try {
+    const formattedToken = token.replace("Bearer ", "").trim();
+    const decoded = jwt.verify(formattedToken, jwtSecret);
+    const { userId, adminId } = decoded;
+
+    // Delete the token from the database
+    if (userId) {
+      await User.update({ token: null }, { where: { userId: userId } });
+    } else if (adminId) {
+      await User.update({ token: null }, { where: { userId: adminId } });
+    }
+
+    // Clear the JWT token from the client-side
+    // res.clearCookie("token");
+    res.status(200).json({ message: "User logged out successfully" });
+  } catch (error) {
+    console.log("Error logging out: ", error);
+    res.status(500).json({ error: "Failed to logout" });
   }
 };

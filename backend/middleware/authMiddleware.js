@@ -31,10 +31,14 @@ exports.authenticateUser = async (req, res, next) => {
 // authMiddleware.js
 
 exports.isAdmin = async (req, res, next) => {
+  const token = req.header("Authorization");
+
+  if (!token) {
+    return res.status(401).json({ error: "Authorization token not found" });
+  }
+
   try {
     // Get the JWT token from the request headers
-    const token = req.headers.authorization;
-
     // Verify and decode the JWT token
     const decodedToken = jwt.verify(token, jwtSecret);
 

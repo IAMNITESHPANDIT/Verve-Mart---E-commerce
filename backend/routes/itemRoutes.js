@@ -8,7 +8,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 //public routes:-
 router.get("/", itemController.getAllItems);
 
-router.get("/:id", itemController.getItemById);
+// router.get("/:id", itemController.getItemById);
 
 //cart routes by user
 
@@ -38,16 +38,16 @@ router.delete(
 
 // Update item stock
 router.put(
-  "/:id/stock",
+  "/cart/:id/stock",
   authMiddleware.isAdmin,
   itemController.updateItemStock
 );
 
-// Fetch existing items
+// Fetch existing cart items
 router.get(
-  "/items",
+  "/cart",
   authMiddleware.authenticateUser,
-  itemController.fetchExistingItems
+  itemController.fetchExistingCartItems
 );
 
 //protected routes:- update|| delete by admin

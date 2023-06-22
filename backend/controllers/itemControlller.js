@@ -47,6 +47,7 @@ exports.createItem = async (req, res) => {
       size,
       color,
       image,
+      subCategory,
     } = req.body;
 
     // Validate required fields
@@ -76,6 +77,7 @@ exports.createItem = async (req, res) => {
       size,
       color,
       image,
+      subCategory,
     });
 
     res.status(201).json({ message: "Item is created" });
@@ -99,6 +101,7 @@ exports.updateItem = async (req, res) => {
       reviewStars,
       size,
       color,
+      subCategory,
     } = req.body;
 
     const item = await Item.findOne({ where: { id: itemId, UserId: user.id } });
@@ -116,6 +119,7 @@ exports.updateItem = async (req, res) => {
     item.reviewStars = reviewStars;
     item.size = size;
     item.color = color;
+    item.subCategory = subCategory;
 
     await item.save();
 
@@ -149,10 +153,11 @@ exports.deleteItem = async (req, res) => {
 
 // for cart Items
 
-exports.fetchExistingItems = async (req, res) => {
+exports.fetchExistingCartItems = async (req, res) => {
   try {
     const user = req.user;
-    const items = await Item.findAll({ where: { UserId: user.id } });
+
+    const items = await cartItem.findAll({ where: { userId: user.userId } });
 
     if (items.length === 0) {
       return res.status(200).json({ message: "No items found" });
@@ -208,8 +213,6 @@ exports.addItemToCart = async (req, res) => {
 exports.deleteCartItem = async (req, res) => {
   try {
     const { itemId, userId } = req.body;
-
-    console.log("itemID ", itemId, userId);
     // Find the cart item
     const existingItem = await cartItem.findOne({
       where: { itemId: itemId, userId: userId },

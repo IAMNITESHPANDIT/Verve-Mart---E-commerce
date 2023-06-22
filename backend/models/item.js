@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     size: DataTypes.STRING,
     color: DataTypes.STRING,
     image: DataTypes.STRING,
+    subCategory: DataTypes.STRING,
   });
 
   Item.associate = (models) => {
