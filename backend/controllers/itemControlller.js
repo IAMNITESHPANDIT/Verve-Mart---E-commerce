@@ -1,11 +1,10 @@
-const CartItem = require("../models/CartItem");
 const { Item, cartItem } = require("../sequelize/index");
 
 exports.getAllItems = async (req, res) => {
   try {
     const items = await Item.findAll();
     if (items.length === 0) {
-      return res.status(200).json({ message: "No items found" });
+      return res.status(200).json({ message: "No items found", data: [] });
     }
     res.json(items);
   } catch (error) {
@@ -25,7 +24,7 @@ exports.getItemById = async (req, res) => {
     }
 
     if (item.length === 0) {
-      return res.status(200).json({ message: "No items found" });
+      return res.status(200).json({ message: "No items found", data: [] });
     }
     res.json({ message: "items are following..", data: item });
   } catch (error) {
@@ -159,14 +158,26 @@ exports.fetchExistingCartItems = async (req, res) => {
 
     const items = await cartItem.findAll({ where: { userId: user.userId } });
 
-    if (items.length === 0) {
-      return res.status(200).json({ message: "No items found" });
+    const array1 = await Item.findAll();
+
+    let newArray = [];
+
+    if (array1.length > 0) {
+      newArray = array1.filter((item) => {
+        return items.some((item2) => item.itemId === item2.itemId);
+      });
+    } else {
+      return res.json({ message: "No data found for item", data: [] });
     }
 
-    res.json(items);
+    if (newArray.length === 0) {
+      return res.status(200).json({ message: "No items found", data: [] });
+    }
+
+    return res.json({ message: "Cart item are aviliable", data: newArray });
   } catch (error) {
     console.log("Error retrieving existing items: ", error);
-    res.status(500).json({ error: "Failed to retrieve existing items" });
+    return res.status(500).json({ error: "Failed to retrieve existing items" });
   }
 };
 
@@ -200,8 +211,8 @@ exports.addItemToCart = async (req, res) => {
       });
     } else {
       // If the item doesn't exist in the cart, create a new cart item
-      await cartItem.create({ itemId, userId });
-      res.json({ message: "Item added to cart successfully" });
+      const item = await cartItem.create({ itemId, userId });
+      res.json({ message: "Item added to cart successfully", data: item });
     }
   } catch (error) {
     console.log("Error adding item to cart: ", error);

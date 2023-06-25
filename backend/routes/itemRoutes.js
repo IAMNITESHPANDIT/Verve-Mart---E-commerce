@@ -6,13 +6,10 @@ const authMiddleware = require("../middleware/authMiddleware");
 // Define item routes
 
 //public routes:-
+
 router.get("/", itemController.getAllItems);
 
-// router.get("/:id", itemController.getItemById);
-
-//cart routes by user
-
-// Protected routes for authenticated user
+router.get("/:id", itemController.getItemById);
 
 // Add item to cart
 
@@ -54,12 +51,8 @@ router.get(
 
 router.post("/", authMiddleware.isAdmin, itemController.createItem);
 
-router.put("/:id", authMiddleware.authenticateUser, itemController.updateItem);
+router.put("/:id", authMiddleware.isAdmin, itemController.updateItem);
 
-router.delete(
-  "/:id",
-  authMiddleware.authenticateUser,
-  itemController.deleteItem
-);
+router.delete("/:id", authMiddleware.isAdmin, itemController.deleteItem);
 
 module.exports = router;

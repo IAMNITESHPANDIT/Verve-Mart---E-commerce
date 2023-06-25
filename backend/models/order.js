@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    // ...
   });
 
   Order.associate = (models) => {
@@ -13,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     Order.hasMany(models.OrderItem);
     Order.hasMany(models.Payment);
     Order.hasMany(models.Return);
-    // ...
   };
 
   return Order;
