@@ -1,3 +1,5 @@
+const address = require("../models/address");
+
 exports.getCountries = async (req, res) => {
   const countries = [
     { id: 1, name: "India" },
@@ -196,5 +198,31 @@ exports.getDistricts = async (req, res) => {
     res.json({ message: "data Aviliable", data: districts });
   } else {
     res.json({ message: "Not Aviliable", data: [] });
+  }
+};
+
+// addressController.js
+
+// Save address
+exports.saveAddress = async (req, res) => {
+  try {
+    const { name, street, country, state, dist, pincode } = req.body;
+    const userId = req.user.userId; // Assuming you have the authenticated user ID
+
+    // Create the address in the database
+    const address = await address.create({
+      name,
+      street,
+      country,
+      state,
+      dist,
+      pincode,
+      userId,
+    });
+
+    res.status(201).json({ message: "Address saved successfully", address });
+  } catch (error) {
+    console.log("Error saving address:", error);
+    res.status(500).json({ error: "Failed to save address" });
   }
 };
