@@ -3,6 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import "./login.style.scss";
+import { BASE_URL, LOGIN } from "../../services/endPoints";
+import { post } from "../../services/networkCalls";
 
 interface LoginFormValues {
   email: string;
@@ -22,9 +24,11 @@ const Login: React.FC = () => {
       .required("Password is required"),
   });
 
-  const handleSubmit = (values: LoginFormValues) => {
+  const handleSubmit = async (values: LoginFormValues) => {
     // Handle form submission here
     console.log(values);
+    const data = await post(`${BASE_URL}${LOGIN}`, values);
+    console.log("respnse", data);
   };
 
   return (

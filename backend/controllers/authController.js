@@ -106,7 +106,11 @@ exports.loginUser = async (req, res) => {
     });
 
     // Return the user and token
-    res.json({ user, token });
+    let cloneUser = JSON.stringify(user);
+    let resultUser = JSON.parse(cloneUser);
+    resultUser.token = token;
+
+    res.json({ message: "User logged in successfully", data: resultUser });
   } catch (error) {
     // Handle login error
     console.log("Login error: ", error);

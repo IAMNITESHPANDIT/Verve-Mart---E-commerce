@@ -9,7 +9,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 router.get("/", itemController.getAllItems);
 
-router.get("/:id", itemController.getItemById);
+// router.get("/:id", itemController.getItemById);
 
 // Add item to cart
 
