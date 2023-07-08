@@ -1,14 +1,29 @@
 /* Login.scss */
 
 .container {
-    margin-top: 20px;
-}
+  margin-top: 20px;
 
-.form-group {
+  .form-group {
     margin-bottom: 20px;
-}
+  }
 
-.text-danger {
+  .text-danger {
     font-size: 14px;
     margin-top: 5px;
+  }
+
+  .login-btn-div {
+    text-align: center;
+    width: 100%;
+
+    button {
+      width: 100px;
+      background-color: #febd69;
+      color: #131921;
+      padding: 8px;
+      cursor: pointer;
+      border: 0;
+      border-radius: 0.75rem !important;
+    }
+  }
 }

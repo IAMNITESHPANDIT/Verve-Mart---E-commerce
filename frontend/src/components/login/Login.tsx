@@ -10,8 +10,11 @@ interface LoginFormValues {
   email: string;
   password: string;
 }
+interface iLogin {
+  setSigninStatus: any;
+}
 
-const Login: React.FC = () => {
+const Login: React.FC<iLogin> = ({ setSigninStatus }) => {
   const initialValues: LoginFormValues = {
     email: "",
     password: "",
@@ -27,12 +30,17 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: LoginFormValues) => {
     // Handle form submission here
     console.log(values);
-    const data = await post(`${BASE_URL}${LOGIN}`, values);
-    console.log("respnse", data);
+    try {
+      const data: any = await post(`${BASE_URL}${LOGIN}`, values);
+      sessionStorage.setItem("AUTH_TOKEN", data.data.token);
+      setSigninStatus(true);
+    } catch (error: any) {
+      console.log("dev--->", error.response.data.error);
+    }
   };
 
   return (
-    <Container>
+    <Container className="container">
       <Row className="justify-content-center">
         <Col xs={12} sm={8} md={6} lg={4}>
           <h2 className="text-center mb-4">Login</h2>
@@ -71,10 +79,9 @@ const Login: React.FC = () => {
                   className="text-danger"
                 />
               </div>
-
-              <Button type="submit" variant="primary">
-                Login
-              </Button>
+              <div className="login-btn-div">
+                <button type="submit">Login</button>
+              </div>
             </Form>
           </Formik>
         </Col>
