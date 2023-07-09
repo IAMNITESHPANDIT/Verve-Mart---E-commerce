@@ -1,5 +1,3 @@
-const address = require("../models/address");
-
 exports.getCountries = async (req, res) => {
   const countries = [
     { id: 1, name: "India" },

@@ -22,6 +22,8 @@ const paymentRoutes = require("./routes/paymentRoute");
 
 const orderRoutes = require("./routes/orderRoute");
 
+const sliderRoutes = require("./routes/sliderRoute");
+
 const PORTNUMBER = process.env.PORT_NUMBER || 4000;
 
 app.use(express.json());
@@ -39,6 +41,8 @@ app.use("/address", addressRoutes);
 app.use("/payment", paymentRoutes);
 
 app.use("/order", orderRoutes);
+
+app.use("/slider", sliderRoutes);
 
 // Sync the models with the database and start the server
 sequelize
