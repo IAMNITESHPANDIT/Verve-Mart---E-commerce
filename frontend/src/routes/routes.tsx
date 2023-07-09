@@ -5,6 +5,7 @@ import Login from "../components/login/Login";
 import { useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
+import Dashboard from "../components/Dashboard/Dashboard";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ function RoutePath() {
           path="/Dashboard"
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Dashboard">
-              <h2>Dashboard</h2>
+              <Dashboard />
             </ProtectedRoute>
           }
         ></Route>

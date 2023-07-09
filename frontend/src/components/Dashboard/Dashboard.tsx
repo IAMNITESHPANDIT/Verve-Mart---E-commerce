@@ -1,13 +1,15 @@
-import React from "react";
+import { Container } from "react-bootstrap";
+
 interface iDash {
   data: [];
 }
-function Dashboard() {
+
+const Dashboard: React.FC = ({}) => {
   return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
+    <Container>
+      <h2>Dashboard dev</h2>
+    </Container>
   );
-}
+};
 
 export default Dashboard;
