@@ -4,6 +4,10 @@ const categoryController = require("../controllers/categoryController");
 
 // get all Categories
 
-router.get("/", categoryController.getCategory);
+router.get("/getAllCategory", categoryController.getCategory);
+
+//get all items behelf of category
+
+router.post("/getAllCategoryByName", categoryController.getAllCategoryByName);
 
 module.exports = router;

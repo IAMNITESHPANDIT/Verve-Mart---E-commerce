@@ -5,6 +5,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    categoryId: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+    },
     UserId: {
       type: DataTypes.INTEGER,
       allowNull: true,
@@ -26,24 +30,28 @@ module.exports = (sequelize, DataTypes) => {
   Item.associate = (models) => {
     Item.hasMany(models.OrderItem);
     Item.belongsTo(models.User, { foreignKey: "UserId" });
-    Item.belongsTo(models.Category, { foreignKey: "categoryId" });
   };
 
   Item.afterCreate(async (item, options) => {
     const { Category } = sequelize.models;
 
     try {
-      // Find or create the category based on the item's category name
-      console.log("category------D*****ev", Category);
-      const [category, created] = await Category.findOrCreate({
-        where: { name: item.category, image: item.categoryImage },
-        defaults: { name: item.category, image: item.categoryImage },
+      // Check if the category already exists
+      const category = await Category.findOne({
+        where: { name: item.category },
       });
 
-      // If the category was created, update the item's categoryId property
-      if (created) {
-        item.categoryId = category.id;
-        await item.save();
+      if (category) {
+        // If the category exists, associate the item with it
+        await item.setCategory(category);
+      } else {
+        // If the category does not exist, create it and associate it with the item
+        const newCategory = await Category.create({
+          name: item.category,
+          image: item.categoryImage,
+          categoryId: item.categoryId,
+        });
+        await item.setCategory(newCategory);
       }
     } catch (error) {
       console.log("Error adding item to category:", error);
