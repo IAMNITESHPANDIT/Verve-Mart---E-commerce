@@ -6,9 +6,10 @@ import { useEffect, useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../components/Dashboard/Dashboard";
-import { GET_SLIDERS } from "../services/endPoints";
+import { GET_CATEGORY, GET_SLIDERS } from "../services/endPoints";
 import Slider from "../components/slider/Slider";
 import { get } from "../services/networkCalls";
+import CategoryList from "../components/category/Categoryt";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ function RoutePath() {
   );
 
   const [dataSlider, setDataSlider] = useState<any>([]);
+
+  const [categoryData, setCategoryData] = useState<any>([]);
 
   const setSigninStatus = (status: boolean) => {
     console.log("setVerified", status);
@@ -29,8 +32,14 @@ function RoutePath() {
   };
 
   const fetchSliderItems = async () => {
-    const data: any = await get(GET_SLIDERS);
-    setDataSlider(data.data);
+    try {
+      const data: any = await get(GET_SLIDERS);
+      setDataSlider(data.data);
+      const getCategory: any = await get(GET_CATEGORY);
+      setCategoryData(getCategory.categories);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -41,6 +50,7 @@ function RoutePath() {
     <div>
       <Header />
       <Slider data={dataSlider} />
+      <CategoryList data={categoryData} />
 
       <Routes>
         <Route
