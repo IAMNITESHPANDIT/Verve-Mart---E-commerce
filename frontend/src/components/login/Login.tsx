@@ -1,10 +1,11 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import "./login.style.scss";
 import { BASE_URL, LOGIN } from "../../services/endPoints";
 import { post } from "../../services/networkCalls";
+import { ToastOnFailure, ToastOnSuccess } from "../../utils/toast/message";
 
 interface LoginFormValues {
   email: string;
@@ -28,14 +29,13 @@ const Login: React.FC<iLogin> = ({ setSigninStatus }) => {
   });
 
   const handleSubmit = async (values: LoginFormValues) => {
-    // Handle form submission here
-    console.log(values);
     try {
       const data: any = await post(`${BASE_URL}${LOGIN}`, values);
       sessionStorage.setItem("AUTH_TOKEN", data.data.token);
+      ToastOnSuccess(data.message);
       setSigninStatus(true);
     } catch (error: any) {
-      console.log("dev--->", error.response.data.error);
+      ToastOnFailure(error.response.data.error);
     }
   };
 

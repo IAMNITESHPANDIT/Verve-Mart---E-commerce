@@ -6,9 +6,11 @@ interface iDash {
 
 const Dashboard: React.FC = ({}) => {
   return (
-    <Container>
-      <h2>Dashboard dev</h2>
-    </Container>
+    <>
+      <Container>
+        <h2>Dashboard dev</h2>
+      </Container>
+    </>
   );
 };
 

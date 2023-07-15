@@ -4,7 +4,6 @@ const { Slider } = require("../sequelize");
 exports.getSliders = async (req, res) => {
   console.log("method exectued");
   try {
-    console.log("slider da", Slider);
     const sliders = await Slider.findAll({ order: [["order", "ASC"]] });
     res.json({ data: sliders });
   } catch (error) {

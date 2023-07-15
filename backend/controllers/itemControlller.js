@@ -47,6 +47,7 @@ exports.createItem = async (req, res) => {
       color,
       image,
       subCategory,
+      categoryImage,
     } = req.body;
 
     // Validate required fields
@@ -77,6 +78,7 @@ exports.createItem = async (req, res) => {
       color,
       image,
       subCategory,
+      categoryImage,
     });
 
     res.status(201).json({ message: "Item is created" });

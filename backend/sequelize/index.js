@@ -13,6 +13,7 @@ const ReturnLineItemModel = require("../models/returnLineItem");
 const CartItem = require("../models/CartItem");
 const slider = require("../models/slider");
 const address = require("../models/address");
+const category = require("../models/category");
 
 // Create an instance of Sequelize
 
@@ -40,6 +41,7 @@ const ReturnLineItem = ReturnLineItemModel(sequelize, Sequelize);
 const cartItem = CartItem(sequelize, Sequelize);
 const Address = address(sequelize, Sequelize);
 const Slider = slider(sequelize, Sequelize);
+const categoryItem = category(sequelize, Sequelize);
 
 // Establish the associations between the models
 User.hasOne(Account);
@@ -85,4 +87,5 @@ module.exports = {
   cartItem,
   Slider,
   Address,
+  categoryItem,
 };

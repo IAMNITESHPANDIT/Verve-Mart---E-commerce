@@ -1,9 +1,9 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 // Create an instance of axios
 
 const instance = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.REACT_APP_BASE_URL,
 });
 
 // Add a response interceptor
@@ -15,7 +15,7 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       // Redirect to the login page
-      console.log('aut ', error)
+      console.log("aut ", error);
       // window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -33,7 +33,7 @@ export async function get<T>(endpoint: string, token?: string): Promise<T> {
     const response: AxiosResponse<T> = await instance.get(endpoint, config);
     return response.data;
   } catch (error) {
-    console.error('Error occurred during GET request:', error);
+    console.error("Error occurred during GET request:", error);
     throw error;
   }
 }
@@ -57,7 +57,7 @@ export async function post<T>(
     );
     return response.data;
   } catch (error) {
-    console.error('Error occurred during POST request:', error);
+    console.error("Error occurred during POST request:", error);
     throw error;
   }
 }
@@ -73,7 +73,7 @@ export async function del<T>(endpoint: string, token?: string): Promise<T> {
     const response: AxiosResponse<T> = await instance.delete(endpoint, config);
     return response.data;
   } catch (error) {
-    console.error('Error occurred during DELETE request:', error);
+    console.error("Error occurred during DELETE request:", error);
     throw error;
   }
 }
@@ -97,7 +97,7 @@ export async function update<T>(
     );
     return response.data;
   } catch (error) {
-    console.error('Error occurred during UPDATE (PUT) request:', error);
+    console.error("Error occurred during UPDATE (PUT) request:", error);
     throw error;
   }
 }
