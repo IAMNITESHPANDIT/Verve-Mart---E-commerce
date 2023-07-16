@@ -7,6 +7,8 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import CategoryItems from "../pages/category-items/CategoryItems";
+import Payment from "../pages/payment/Payment";
+import AddressForm from "../pages/address/Address";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -54,14 +56,23 @@ function RoutePath() {
           }
         ></Route>
 
-        {/* <Route
-            path="/Dashboard"
-            element={
-              <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          ></Route> */}
+        <Route
+          path="/checkout-page/:productId"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <AddressForm />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <Payment />
+            </ProtectedRoute>
+          }
+        ></Route>
       </Routes>
       <Footer />
     </div>

@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     state: DataTypes.STRING,
     dist: DataTypes.STRING,
     pincode: DataTypes.STRING,
-    userId: DataTypes.INTEGER,
+    userId: DataTypes.STRING,
   });
 
   Address.associate = (models) => {

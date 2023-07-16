@@ -1,19 +1,32 @@
 import React from "react";
 import { Card, Button } from "react-bootstrap";
 import "./card.style.scss";
+import { useNavigate } from "react-router-dom";
 
 interface cardProps {
   data: any;
 }
 
 const CardItem: React.FC<cardProps> = ({ data }) => {
+  const navigate = useNavigate();
+
+  const onNavigation = (id: string) => {
+    console.log("onNavigation", id);
+    navigate(`/checkout-page/${id}`);
+    return;
+  };
+
   return (
     <div className="cartItem">
       <div className="container ">
         <div className="item-list">
-          {data.length > 0 &&
+          {data.length > 0 ? (
             data.map((item: any) => (
-              <Card key={item.id} className="item-card">
+              <Card
+                key={item.id}
+                className="item-card"
+                onClick={() => onNavigation(item.itemId)}
+              >
                 <Card.Img
                   variant="top"
                   src={item.image}
@@ -41,7 +54,10 @@ const CardItem: React.FC<cardProps> = ({ data }) => {
                   </div>
                 </Card.Body>
               </Card>
-            ))}
+            ))
+          ) : (
+            <h2>No Data Aviliable</h2>
+          )}
         </div>
       </div>
     </div>
