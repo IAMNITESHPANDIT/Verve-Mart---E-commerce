@@ -6,6 +6,8 @@ import "./login.style.scss";
 import { BASE_URL, LOGIN } from "../../services/endPoints";
 import { post } from "../../services/networkCalls";
 import { ToastOnFailure, ToastOnSuccess } from "../../utils/toast/message";
+import { useDispatch } from "react-redux";
+import { loggedIn } from "../../store/reducers/user";
 
 interface LoginFormValues {
   email: string;
@@ -20,6 +22,7 @@ const Login: React.FC<iLogin> = ({ setSigninStatus }) => {
     email: "",
     password: "",
   };
+  const dispatch = useDispatch();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -33,8 +36,8 @@ const Login: React.FC<iLogin> = ({ setSigninStatus }) => {
       const data: any = await post(`${BASE_URL}${LOGIN}`, values);
       sessionStorage.setItem("AUTH_TOKEN", data.data.token);
       sessionStorage.setItem("USER_DETAIL", JSON.stringify(data.data));
-
       ToastOnSuccess(data.message);
+      dispatch(loggedIn(data.data));
       setSigninStatus(true);
     } catch (error: any) {
       ToastOnFailure(error.response.data.error);

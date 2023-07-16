@@ -1,11 +1,12 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Login from "../components/login/Login";
 import { useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../components/Dashboard/Dashboard";
-
-import DefaultComponents from "../components/default/Default";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
+import CategoryItems from "../pages/category-items/CategoryItems";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -15,8 +16,6 @@ function RoutePath() {
   );
 
   const setSigninStatus = (status: boolean) => {
-    console.log("setVerified", status);
-
     setVerified(status);
     if (status) {
       navigate("/Dashboard");
@@ -25,27 +24,46 @@ function RoutePath() {
 
   return (
     <div>
-      <DefaultComponents>
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <PublicRoute isVerified={isVerified} redirectPath="/Dashboard">
-                <Login setSigninStatus={setSigninStatus} />
-              </PublicRoute>
-            }
-          ></Route>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Navigate to="/Dashboard" />} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute isVerified={isVerified} redirectPath="/Dashboard">
+              <Login setSigninStatus={setSigninStatus} />
+            </PublicRoute>
+          }
+        ></Route>
 
-          <Route
+        <Route
+          path="/Dashboard"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <Dashboard />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/:categoryName/:categoryId"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <CategoryItems />
+            </PublicRoute>
+          }
+        ></Route>
+
+        {/* <Route
             path="/Dashboard"
             element={
               <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
                 <Dashboard />
               </ProtectedRoute>
             }
-          ></Route>
-        </Routes>
-      </DefaultComponents>
+          ></Route> */}
+      </Routes>
+      <Footer />
     </div>
   );
 }

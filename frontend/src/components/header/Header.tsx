@@ -1,11 +1,24 @@
 import "./header.style.scss";
 import Logo from "../../assest/images/logo.png";
 import { Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
+export const getLoggedInUserDetails = () => {
+  return sessionStorage.getItem("USER_DETAIL")
+    ? sessionStorage.getItem("USER_DETAIL") || ""
+    : {};
+};
 const Header = () => {
+  const navigate = useNavigate();
   const data: any = sessionStorage.getItem("USER_DETAIL")
     ? JSON.parse(sessionStorage.getItem("USER_DETAIL") || "")
     : {};
+
+  const navigateLogin = () => {
+    navigate("/Login");
+    return;
+  };
+
   return (
     <header className="verve-header">
       <Container>
@@ -29,7 +42,12 @@ const Header = () => {
             <>
               <div className="verve-header__nav-option">
                 <span className="option-line-one">
-                  Hello,{data?.name ? data?.name : `Sign in`}
+                  Hello,
+                  {data?.name ? (
+                    data?.name
+                  ) : (
+                    <span onClick={() => navigateLogin()}> Sign in</span>
+                  )}
                 </span>
                 <span className="option-line-two">Account &amp; Lists</span>
               </div>
