@@ -1,0 +1,26 @@
+.checkout-page {
+  .card-container {
+    padding: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-element {
+    font-size: 16px;
+    color: #333;
+
+    &::placeholder {
+      color: #ccc;
+    }
+  }
+
+  .card-element--invalid {
+    color: #dc3545;
+  }
+
+  label {
+    min-width: 31%;
+  }
+}

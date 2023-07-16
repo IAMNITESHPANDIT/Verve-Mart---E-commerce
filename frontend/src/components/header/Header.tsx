@@ -1,8 +1,24 @@
 import "./header.style.scss";
 import Logo from "../../assest/images/logo.png";
 import { Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
+export const getLoggedInUserDetails = () => {
+  return sessionStorage.getItem("USER_DETAIL")
+    ? sessionStorage.getItem("USER_DETAIL") || ""
+    : {};
+};
 const Header = () => {
+  const navigate = useNavigate();
+  const data: any = sessionStorage.getItem("USER_DETAIL")
+    ? JSON.parse(sessionStorage.getItem("USER_DETAIL") || "")
+    : {};
+
+  const navigateLogin = () => {
+    navigate("/Login");
+    return;
+  };
+
   return (
     <header className="verve-header">
       <Container>
@@ -23,22 +39,35 @@ const Header = () => {
             </div>
           </Col>
           <Col sm={12} md={3} className="verve-header__nav">
-            <div className="verve-header__nav-option">
-              <span className="option-line-one">Hello, Sign in</span>
-              <span className="option-line-two">Account &amp; Lists</span>
-            </div>
-            <div className="verve-header__nav-option">
-              <span className="option-line-one">Returns</span>
-              <span className="option-line-two">&amp; Orders</span>
-            </div>
-            <div className="verve-header__nav-option">
-              <span className="option-line-one">Your</span>
-              <span className="option-line-two">Prime</span>
-            </div>
-            <div className="verve-header__nav-cart">
-              <span className="cart-count">0</span>
-              <span className="cart-icon">&#x1F6D2;</span>
-            </div>
+            <>
+              <div className="verve-header__nav-option">
+                <span className="option-line-one">
+                  Hello,
+                  {data?.name ? (
+                    data?.name
+                  ) : (
+                    <span onClick={() => navigateLogin()}> Sign in</span>
+                  )}
+                </span>
+                <span className="option-line-two">Account &amp; Lists</span>
+              </div>
+              {data?.name && (
+                <>
+                  <div className="verve-header__nav-option">
+                    <span className="option-line-one">Returns</span>
+                    <span className="option-line-two">&amp; Orders</span>
+                  </div>
+                  <div className="verve-header__nav-option">
+                    <span className="option-line-one">Your</span>
+                    <span className="option-line-two">Prime</span>
+                  </div>
+                  <div className="verve-header__nav-cart">
+                    <span className="cart-count">0</span>
+                    <span className="cart-icon">&#x1F6D2;</span>
+                  </div>
+                </>
+              )}
+            </>
           </Col>
         </Row>
       </Container>

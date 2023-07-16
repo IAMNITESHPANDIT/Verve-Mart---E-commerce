@@ -1,14 +1,14 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import Footer from "../components/footer/Footer";
-import Header from "../components/header/Header";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Login from "../components/login/Login";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "../components/Dashboard/Dashboard";
-import { GET_SLIDERS } from "../services/endPoints";
-import Slider from "../components/slider/Slider";
-import { get } from "../services/networkCalls";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
+import CategoryItems from "../pages/category-items/CategoryItems";
+import Payment from "../pages/payment/Payment";
+import AddressForm from "../pages/address/Address";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -17,32 +17,18 @@ function RoutePath() {
     sessionStorage.getItem("AUTH_TOKEN") ? true : false
   );
 
-  const [dataSlider, setDataSlider] = useState<any>([]);
-
   const setSigninStatus = (status: boolean) => {
-    console.log("setVerified", status);
-
     setVerified(status);
     if (status) {
       navigate("/Dashboard");
     }
   };
 
-  const fetchSliderItems = async () => {
-    const data: any = await get(GET_SLIDERS);
-    setDataSlider(data.data);
-  };
-
-  useEffect(() => {
-    fetchSliderItems();
-  }, []);
-
   return (
     <div>
       <Header />
-      <Slider data={dataSlider} />
-
       <Routes>
+        <Route path="/" element={<Navigate to="/Dashboard" />} />
         <Route
           path="/login"
           element={
@@ -55,8 +41,35 @@ function RoutePath() {
         <Route
           path="/Dashboard"
           element={
-            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
               <Dashboard />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/:categoryName/:categoryId"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <CategoryItems />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/checkout-page/:productId"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <AddressForm />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <Payment />
             </ProtectedRoute>
           }
         ></Route>

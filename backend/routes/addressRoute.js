@@ -6,6 +6,9 @@ const addressController = require("../controllers/addressController");
 const { authenticateUser } = require("../middleware/authMiddleware");
 
 // Get addres information
+
+router.post("/", addressController.getCountries);
+
 router.post("/", addressController.getCountries);
 
 router.post("/getState", addressController.getState);
@@ -13,6 +16,11 @@ router.post("/getState", addressController.getState);
 router.post("/getDistrict", addressController.getDistricts);
 
 // POST /address
+
 router.post("/addAddress", authenticateUser, addressController.saveAddress);
+
+// GET /address
+
+router.post("/getAddress", authenticateUser, addressController.getSavedAddress);
 
 module.exports = router;
