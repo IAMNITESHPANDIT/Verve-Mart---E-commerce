@@ -53,6 +53,7 @@ const AddressForm: React.FC = () => {
       ToastOnSuccess(response.message);
       fetchAddress();
       setSubmitting(false);
+      setNewAddressFlag(false);
     } catch (error) {
       console.log(error);
       // Handle error
