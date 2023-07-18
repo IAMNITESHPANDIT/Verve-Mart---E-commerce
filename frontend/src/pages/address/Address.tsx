@@ -1,7 +1,19 @@
 import React from "react";
+
 import { Formik, Field, Form, ErrorMessage } from "formik";
+
 import * as Yup from "yup";
+
 import "./address.style.scss";
+
+import { post } from "../../services/networkCalls";
+
+import { ADD_ADDRESS, GET_ADDRESS } from "../../services/endPoints";
+
+import { useEffect, useState } from "react";
+import { ToastOnSuccess } from "../../utils/toast/message";
+import AddressRadio from "./radios/AddressRadio";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -13,14 +25,33 @@ const validationSchema = Yup.object({
 });
 
 const AddressForm: React.FC = () => {
+  const [address, setAddress] = useState([]);
+
+  const [selectedAddress, setSelectedAddress] = useState("");
+
+  const [newAddressFlag, setNewAddressFlag] = useState(false);
+
+  const user: any = JSON.parse(sessionStorage.getItem("USER_DETAIL") || "{}");
+
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
-      // Simulate form submission delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log(values);
-      // Submit form data to backend or perform any desired action
-
+      setSubmitting(false);
+      const response: any = await post(
+        ADD_ADDRESS,
+        {
+          name: values.name,
+          street: values.street,
+          country: "India",
+          state: values.state,
+          dist: values.dist,
+          pincode: values.pinCode,
+          userId: user.userId,
+          phoneNumber: values.phoneNumber,
+        },
+        sessionStorage.getItem("AUTH_TOKEN") || ""
+      );
+      ToastOnSuccess(response.message);
+      fetchAddress();
       setSubmitting(false);
     } catch (error) {
       console.log(error);
@@ -29,124 +60,161 @@ const AddressForm: React.FC = () => {
     }
   };
 
+  const fetchAddress = async () => {
+    try {
+      const response: any = await post(
+        GET_ADDRESS,
+        { userId: user.userId },
+        sessionStorage.getItem("AUTH_TOKEN") || ""
+      );
+      setAddress(response.address);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAddress();
+  }, []);
+
   return (
     <div className="address-form">
       <h2>Delivery Address</h2>
-      <Formik
-        initialValues={{
-          name: "",
-          phoneNumber: "",
-          street: "",
-          district: "",
-          state: "",
-          pinCode: "",
-        }}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <div className="form-row">
-              <div className="form-column">
-                <div className="form-group">
-                  <label htmlFor="name">Full Name</label>
-                  <Field
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="error-message"
-                  />
+      {address.length > 0 && (
+        <AddressRadio
+          data={address}
+          selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
+        />
+      )}
+      {!newAddressFlag ? (
+        <CustomButton
+          btnName="Add New Address"
+          btnEvent={() => setNewAddressFlag(true)}
+        />
+      ) : (
+        <CustomButton
+          btnName="Hide"
+          btnEvent={() => setNewAddressFlag(false)}
+        />
+      )}
+      {newAddressFlag && (
+        <Formik
+          initialValues={{
+            name: "",
+            phoneNumber: "",
+            street: "",
+            district: "",
+            state: "",
+            pinCode: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <div className="form-row">
+                <div className="form-column">
+                  <div className="form-group">
+                    <label htmlFor="name">Full Name</label>
+                    <Field
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="name"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="phoneNumber">Phone Number</label>
+                    <Field
+                      type="text"
+                      name="phoneNumber"
+                      id="phoneNumber"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="phoneNumber"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="pinCode">Pin Code</label>
+                    <Field
+                      type="text"
+                      name="pinCode"
+                      id="pinCode"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="pinCode"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="phoneNumber">Phone Number</label>
-                  <Field
-                    type="text"
-                    name="phoneNumber"
-                    id="phoneNumber"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="phoneNumber"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="pinCode">Pin Code</label>
-                  <Field
-                    type="text"
-                    name="pinCode"
-                    id="pinCode"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="pinCode"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-              </div>
-              <div className="form-column">
-                <div className="form-group">
-                  <label htmlFor="street">Address</label>
-                  <Field
-                    type="text"
-                    name="street"
-                    id="street"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="street"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="district">District</label>
-                  <Field
-                    type="text"
-                    name="district"
-                    id="district"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="district"
-                    component="div"
-                    className="error-message"
-                  />
-                </div>
+                <div className="form-column">
+                  <div className="form-group">
+                    <label htmlFor="street">Address</label>
+                    <Field
+                      type="text"
+                      name="street"
+                      id="street"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="street"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="district">District</label>
+                    <Field
+                      type="text"
+                      name="district"
+                      id="district"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="district"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="state">State</label>
-                  <Field
-                    type="text"
-                    name="state"
-                    id="state"
-                    className="form-control"
-                  />
-                  <ErrorMessage
-                    name="state"
-                    component="div"
-                    className="error-message"
-                  />
+                  <div className="form-group">
+                    <label htmlFor="state">State</label>
+                    <Field
+                      type="text"
+                      name="state"
+                      id="state"
+                      className="form-control"
+                    />
+                    <ErrorMessage
+                      name="state"
+                      component="div"
+                      className="error-message"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="btn btn-primary"
-            >
-              {isSubmitting ? "Submitting..." : "Save Address"}
-            </button>
-          </Form>
-        )}
-      </Formik>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="btn btn-primary"
+              >
+                {isSubmitting ? "Submitting..." : "Save Address"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+      )}
     </div>
   );
 };

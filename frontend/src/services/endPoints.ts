@@ -11,3 +11,7 @@ export const GET_CATEGORY = "category/getAllCategory";
 export const GET_CATEGORY_BY_NAME = "category/getAllCategoryByName";
 
 export const ADD_PAYMENT = "payment/addPayment";
+
+export const ADD_ADDRESS = "address/addAddress";
+
+export const GET_ADDRESS = "address/getAddress";
