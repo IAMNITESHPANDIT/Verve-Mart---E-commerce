@@ -206,7 +206,8 @@ exports.getDistricts = async (req, res) => {
 // Save address
 exports.saveAddress = async (req, res) => {
   try {
-    const { name, street, country, state, dist, pincode } = req.body;
+    const { name, street, country, state, dist, pincode, phoneNumber } =
+      req.body;
     const userId = req.user.userId; // Assuming you have the authenticated user ID
 
     // Create the address in the database
@@ -218,6 +219,7 @@ exports.saveAddress = async (req, res) => {
       dist,
       pincode,
       userId,
+      phoneNumber,
     });
 
     res.status(201).json({ message: "Address saved successfully", address });
@@ -236,7 +238,7 @@ exports.getSavedAddress = async (req, res) => {
       where: { userId },
     });
 
-    res.json({ addresses });
+    res.json({ address: addresses });
   } catch (error) {
     console.log("Error retrieving addresses:", error);
     res.status(500).json({ error: "Failed to retrieve addresses" });
