@@ -1,4 +1,3 @@
-import React from "react";
 import CheckoutPage from "./checkout/CheckoutPage";
 
 function Payment() {

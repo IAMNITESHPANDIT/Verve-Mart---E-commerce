@@ -21,7 +21,10 @@ const AddressRadio = (props: any) => {
               <span>{item?.state}</span>
               <span>{item?.pincode}</span>
               {props.selectedAddress === item.addressId && (
-                <CustomButton btnName="Deliver on this Address" />
+                <CustomButton
+                  btnName="Deliver on this Address"
+                  btnEvent={() => props.onNavigate(item.addressId)}
+                />
               )}
             </label>
           </div>
