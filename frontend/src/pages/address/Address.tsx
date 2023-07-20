@@ -11,9 +11,14 @@ import { post } from "../../services/networkCalls";
 import { ADD_ADDRESS, GET_ADDRESS } from "../../services/endPoints";
 
 import { useEffect, useState } from "react";
+
 import { ToastOnSuccess } from "../../utils/toast/message";
+
 import AddressRadio from "./radios/AddressRadio";
+
 import CustomButton from "../../components/CustomButton/CustomButton";
+
+import { useNavigate, useParams } from "react-router-dom";
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
@@ -30,6 +35,10 @@ const AddressForm: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState("");
 
   const [newAddressFlag, setNewAddressFlag] = useState(false);
+
+  const navigate = useNavigate();
+
+  const params = useParams();
 
   const user: any = JSON.parse(sessionStorage.getItem("USER_DETAIL") || "{}");
 
@@ -74,6 +83,11 @@ const AddressForm: React.FC = () => {
     }
   };
 
+  const onNavigate = (navigateId: string) => {
+    navigate(`/payment/${params?.productId}/${navigateId}`);
+    return;
+  };
+
   useEffect(() => {
     fetchAddress();
   }, []);
@@ -86,6 +100,7 @@ const AddressForm: React.FC = () => {
           data={address}
           selectedAddress={selectedAddress}
           setSelectedAddress={setSelectedAddress}
+          onNavigate={onNavigate}
         />
       )}
       {!newAddressFlag ? (

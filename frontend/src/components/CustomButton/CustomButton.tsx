@@ -9,7 +9,7 @@ interface Iprops {
 }
 const CustomButton: React.FC<Iprops> = ({ btnName, btnEvent, btnClsName }) => {
   return (
-    <button className={`${btnClsName}`} onClick={() => btnEvent()}>
+    <button className={`customBtn ${btnClsName}`} onClick={() => btnEvent()}>
       {btnName}
     </button>
   );

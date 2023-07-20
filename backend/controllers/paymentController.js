@@ -30,6 +30,7 @@ exports.addPayment = async (req, res) => {
     await payment.create(paymentData);
 
     // Update the user's payment details
+
     const userData = {
       paymentId: charge.id,
       cardLastFour: charge.source.last4,
@@ -45,8 +46,10 @@ exports.addPayment = async (req, res) => {
 };
 
 // Function to generate a unique orderId
+
 function generateOrderId() {
   // Generate a random alphanumeric string
+
   const randomString = Math.random().toString(36).substring(2, 10);
 
   // Get the current timestamp

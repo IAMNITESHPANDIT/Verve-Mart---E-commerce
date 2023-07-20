@@ -9,6 +9,7 @@ import Footer from "../components/footer/Footer";
 import CategoryItems from "../pages/category-items/CategoryItems";
 import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
+import CartList from "../components/cart/Cart";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -66,10 +67,19 @@ function RoutePath() {
         ></Route>
 
         <Route
-          path="/payment"
+          path="/payment/:productId/:addressId"
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
               <Payment />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <CartList />
             </ProtectedRoute>
           }
         ></Route>
