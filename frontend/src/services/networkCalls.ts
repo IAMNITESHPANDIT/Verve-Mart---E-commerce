@@ -16,7 +16,8 @@ instance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Redirect to the login page
       console.log("aut ", error);
-      // window.location.href = '/login';
+      sessionStorage.clear();
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

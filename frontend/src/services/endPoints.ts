@@ -12,6 +12,12 @@ export const GET_CATEGORY_BY_NAME = "category/getAllCategoryByName";
 
 export const ADD_PAYMENT = "payment/addPayment";
 
+export const GET_ADDRESS = "address/getAddress";
+
 export const ADD_ADDRESS = "address/addAddress";
 
-export const GET_ADDRESS = "address/getAddress";
+export const GET_CARTS_ITEM = "items/cart";
+
+export const ADD_ITEM_IN_CART = "items/cart";
+
+export const UPDATE_ITEM_IN_CART = "items/cart";
