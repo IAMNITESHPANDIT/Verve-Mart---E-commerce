@@ -297,3 +297,45 @@ exports.updateItemStock = async (req, res) => {
     res.status(500).json({ error: "Failed to update item stock" });
   }
 };
+
+// fetch cart items by id
+exports.fetchCartItemById = async (req, res) => {
+  try {
+    const { itemId } = req.body;
+
+    const user = req.user;
+
+    // Find the cart item by cartId
+    const cart = await cartItem.findOne({
+      where: { itemId },
+    });
+
+    if (!cart) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
+    const cartItems = await cartItem.findAll({
+      where: { userId: user.userId },
+    });
+
+    const items = await Item.findAll({ where: { itemId: itemId } });
+
+    const newArray = tableParser(items).map((item) => {
+      const matchingCartItem = tableParser(cartItems).find(
+        (cartItem) => item.itemId === cartItem.itemId
+      );
+      if (matchingCartItem) {
+        item.quantity = matchingCartItem.quantity;
+      }
+      return item;
+    });
+
+    return res.json({
+      message: "Cart item fetched successfully",
+      data: newArray,
+    });
+  } catch (error) {
+    console.log("Error fetching cart item: ", error);
+    return res.status(500).json({ error: "Failed to fetch cart item" });
+  }
+};

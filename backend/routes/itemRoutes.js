@@ -47,6 +47,13 @@ router.get(
   itemController.fetchExistingCartItems
 );
 
+// Fetch existing cart item by id
+router.post(
+  "/cart/identity",
+  authMiddleware.authenticateUser,
+  itemController.fetchCartItemById
+);
+
 //protected routes:- update|| delete by admin
 
 router.post("/", authMiddleware.isAdmin, itemController.createItem);

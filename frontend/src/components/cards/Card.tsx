@@ -13,12 +13,6 @@ interface cardProps {
 const CardItem: React.FC<cardProps> = ({ data }) => {
   const navigate = useNavigate();
 
-  const onNavigation = (id: string) => {
-    console.log("onNavigation", id);
-    navigate(`/checkout-page/${id}`);
-    return;
-  };
-
   const addToCart = async (e: any, id: string) => {
     e.stopPropagation();
     if (sessionStorage.getItem("AUTH_TOKEN")) {
@@ -51,11 +45,7 @@ const CardItem: React.FC<cardProps> = ({ data }) => {
         <div className="item-list">
           {data.length > 0 ? (
             data.map((item: any) => (
-              <Card
-                key={item.itemId}
-                className="item-card"
-                onClick={() => onNavigation(item.itemId)}
-              >
+              <Card key={item.itemId} className="item-card">
                 <Card.Img
                   variant="top"
                   src={item.image}
@@ -72,9 +62,14 @@ const CardItem: React.FC<cardProps> = ({ data }) => {
                     <div className="price">Price: ${item.price}</div>
                     <div className="rating">Rating: {item.reviewStars}/5</div>
                     <div className="actions">
-                      <Button variant="primary" className="buy-now-button">
+                      <Button
+                        variant="primary"
+                        className="buy-now-button"
+                        onClick={(e) => addToCart(e, item.itemId)}
+                      >
                         Buy Now
                       </Button>
+
                       <Button
                         variant="outline-primary"
                         className="add-to-cart-button"
