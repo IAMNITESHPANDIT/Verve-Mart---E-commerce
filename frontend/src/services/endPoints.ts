@@ -19,3 +19,5 @@ export const ADD_ADDRESS = "address/addAddress";
 export const GET_CARTS_ITEM = "items/cart";
 
 export const ADD_ITEM_IN_CART = "items/cart";
+
+export const UPDATE_ITEM_IN_CART = "items/cart";

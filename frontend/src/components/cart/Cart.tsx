@@ -1,18 +1,78 @@
-import { GET_CARTS_ITEM } from "../../services/endPoints";
-import { get } from "../../services/networkCalls";
+import { GET_CARTS_ITEM, UPDATE_ITEM_IN_CART } from "../../services/endPoints";
+import { get, update } from "../../services/networkCalls";
+import { calculatePrice } from "../../utils/handler/handler";
+import { ToastOnFailure } from "../../utils/toast/message";
 import CustomButton from "../CustomButton/CustomButton";
 import "./card.style.scss";
 import { useState, useEffect } from "react";
 import { FaLessThan, FaGreaterThan } from "react-icons/fa";
 const CartList = (props: any) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState<any>([]);
 
-  const handleDecrement = (id: string) => {
-    console.log(id);
+  const handleDecrement = (id: string, quantity: number) => {
+    if (quantity <= 1) {
+      ToastOnFailure("Invalid quantity");
+      return;
+    }
+    setCartItems((prevItems: any) => {
+      // Create a new array with updated quantities
+      const updatedItems = prevItems.map((item: any) => {
+        if (item.itemId === id) {
+          // Update the quantity of the matching item
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+          };
+        } else {
+          // Return the item unchanged if it doesn't match the specified ID
+          return item;
+        }
+      });
+
+      return updatedItems; // Return the updated array to setCartItems
+    });
+    upadateItem(id, quantity - 2);
   };
 
-  const handleIncrement = (id: string) => {
-    console.log(id);
+  const handleIncrement = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      ToastOnFailure("Invalid quantity");
+      return;
+    }
+    setCartItems((prevItems: any) => {
+      // Create a new array with updated quantities
+      const updatedItems = prevItems.map((item: any) => {
+        if (item.itemId === id) {
+          // Update the quantity of the matching item
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        } else {
+          // Return the item unchanged if it doesn't match the specified ID
+          return item;
+        }
+      });
+
+      return updatedItems; // Return the updated array to setCartItems
+    });
+    upadateItem(id, quantity);
+  };
+
+  const upadateItem = async (itemId: string, quantity: number) => {
+    try {
+      const updateResponse = await update(
+        UPDATE_ITEM_IN_CART,
+        {
+          itemId: itemId,
+          quantity: quantity + 1,
+        },
+        sessionStorage.getItem("AUTH_TOKEN") || ""
+      );
+      console.log(updateResponse);
+    } catch (error) {
+      console.log("error updating item", error);
+    }
   };
 
   const fetchCartItems = async () => {
@@ -31,8 +91,6 @@ const CartList = (props: any) => {
     fetchCartItems();
   }, []);
 
-  console.log("cart items fetched", cartItems);
-
   return (
     <div className="cart-list container">
       <h2>Your Cart</h2>
@@ -47,18 +105,22 @@ const CartList = (props: any) => {
                   <img src={item.image} alt={item.itemName} />
                   <div className="item-details">
                     <h3>{item.itemName}</h3>
-                    <p>Price: ${item.price}</p>
+                    <p>Price: ${calculatePrice(item.price, item.quantity)}</p>
                     <div className="quantity-section">
                       <button
                         className="btn-decrement"
-                        onClick={() => handleDecrement(item.itemId)}
+                        onClick={() =>
+                          handleDecrement(item.itemId, item.quantity)
+                        }
                       >
                         <FaLessThan />
                       </button>
                       <span>{item.quantity}</span>
                       <button
                         className="btn-increment"
-                        onClick={() => handleIncrement(item.itemId)}
+                        onClick={() =>
+                          handleIncrement(item.itemId, item.quantity)
+                        }
                       >
                         <FaGreaterThan />
                       </button>

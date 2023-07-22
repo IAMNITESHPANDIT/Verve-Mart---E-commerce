@@ -21,7 +21,7 @@ router.post(
 
 // Update item in cart
 router.put(
-  "/cart/:id",
+  "/cart",
   authMiddleware.authenticateUser,
   itemController.updateCartItem
 );

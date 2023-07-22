@@ -44,7 +44,6 @@ const CardItem: React.FC<cardProps> = ({ data }) => {
       navigate("/login");
     }
   };
-  console.log("item id", data);
 
   return (
     <div className="cartItem">
