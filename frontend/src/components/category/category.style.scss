@@ -1,0 +1,33 @@
+.category-list {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+
+  .category {
+    margin-right: 20px;
+    text-align: center;
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .icon {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      margin-bottom: 10px;
+      text-align: center;
+
+      img {
+        width: 150px;
+        height: 150px;
+        border-radius: 20%;
+      }
+    }
+
+    .label {
+      font-size: 14px;
+    }
+  }
+}

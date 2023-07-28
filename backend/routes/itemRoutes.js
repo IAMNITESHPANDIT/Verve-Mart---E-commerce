@@ -21,7 +21,7 @@ router.post(
 
 // Update item in cart
 router.put(
-  "/cart/:id",
+  "/cart",
   authMiddleware.authenticateUser,
   itemController.updateCartItem
 );
@@ -45,6 +45,13 @@ router.get(
   "/cart",
   authMiddleware.authenticateUser,
   itemController.fetchExistingCartItems
+);
+
+// Fetch existing cart item by id
+router.post(
+  "/cart/identity",
+  authMiddleware.authenticateUser,
+  itemController.fetchCartItemById
 );
 
 //protected routes:- update|| delete by admin

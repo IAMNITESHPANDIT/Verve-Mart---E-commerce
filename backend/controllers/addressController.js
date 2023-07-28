@@ -1,3 +1,5 @@
+const { Address } = require("../sequelize");
+
 exports.getCountries = async (req, res) => {
   const countries = [
     { id: 1, name: "India" },
@@ -204,11 +206,12 @@ exports.getDistricts = async (req, res) => {
 // Save address
 exports.saveAddress = async (req, res) => {
   try {
-    const { name, street, country, state, dist, pincode } = req.body;
+    const { name, street, country, state, dist, pincode, phoneNumber } =
+      req.body;
     const userId = req.user.userId; // Assuming you have the authenticated user ID
 
     // Create the address in the database
-    const address = await address.create({
+    const address = await Address.create({
       name,
       street,
       country,
@@ -216,11 +219,28 @@ exports.saveAddress = async (req, res) => {
       dist,
       pincode,
       userId,
+      phoneNumber,
     });
 
     res.status(201).json({ message: "Address saved successfully", address });
   } catch (error) {
     console.log("Error saving address:", error);
     res.status(500).json({ error: "Failed to save address" });
+  }
+};
+
+exports.getSavedAddress = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Retrieve the addresses for the specified user
+    const addresses = await Address.findAll({
+      where: { userId },
+    });
+
+    res.json({ address: addresses });
+  } catch (error) {
+    console.log("Error retrieving addresses:", error);
+    res.status(500).json({ error: "Failed to retrieve addresses" });
   }
 };

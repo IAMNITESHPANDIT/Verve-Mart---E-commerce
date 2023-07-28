@@ -1,7 +1,7 @@
 import React from "react";
 import { Carousel } from "react-bootstrap";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-
+import "./slider.style.scss";
 interface SliderItem {
   title: string;
   image: string;
@@ -19,14 +19,14 @@ const Slider: React.FC<SliderProps> = ({ data }) => {
   }
 
   return (
-    <div>
-      <Carousel>
-        {data.length > 0 &&
-          data.map((item: SliderItem, index) => {
+    <div className="slider">
+      {data.length > 0 && (
+        <Carousel>
+          {data.map((item: SliderItem, index) => {
             return (
               <Carousel.Item key={index}>
                 <img
-                  className="d-block w-100"
+                  className="slider-img"
                   src={item.image}
                   alt="First slide"
                 />
@@ -37,7 +37,8 @@ const Slider: React.FC<SliderProps> = ({ data }) => {
               </Carousel.Item>
             );
           })}
-      </Carousel>
+        </Carousel>
+      )}
     </div>
   );
 };

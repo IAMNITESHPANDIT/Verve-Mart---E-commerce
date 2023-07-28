@@ -1,3 +1,4 @@
+const { tableParser } = require("../handler/handler");
 const { Item, cartItem } = require("../sequelize/index");
 
 exports.getAllItems = async (req, res) => {
@@ -158,25 +159,26 @@ exports.fetchExistingCartItems = async (req, res) => {
   try {
     const user = req.user;
 
-    const items = await cartItem.findAll({ where: { userId: user.userId } });
+    const cartItems = await cartItem.findAll({
+      where: { userId: user.userId },
+    });
+    const itemIdsInCart = cartItems.map((cartItem) => cartItem.itemId);
 
-    const array1 = await Item.findAll();
+    const items = await Item.findAll({ where: { itemId: itemIdsInCart } });
 
-    let newArray = [];
+    const newArray = tableParser(items).map((item) => {
+      const matchingCartItem = tableParser(cartItems).find(
+        (cartItem) => item.itemId === cartItem.itemId
+      );
+      if (matchingCartItem) {
+        item.quantity = matchingCartItem.quantity;
+      } else {
+        item.quantity = 0; // Set quantity to 0 if not found in cart
+      }
+      return item;
+    });
 
-    if (array1.length > 0) {
-      newArray = array1.filter((item) => {
-        return items.some((item2) => item.itemId === item2.itemId);
-      });
-    } else {
-      return res.json({ message: "No data found for item", data: [] });
-    }
-
-    if (newArray.length === 0) {
-      return res.status(200).json({ message: "No items found", data: [] });
-    }
-
-    return res.json({ message: "Cart item are aviliable", data: newArray });
+    return res.json({ message: "Cart items are available", data: newArray });
   } catch (error) {
     console.log("Error retrieving existing items: ", error);
     return res.status(500).json({ error: "Failed to retrieve existing items" });
@@ -248,22 +250,26 @@ exports.deleteCartItem = async (req, res) => {
 // Update item in cart
 exports.updateCartItem = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { quantity } = req.body;
+    const { quantity, itemId } = req.body;
     const user = req.user;
 
     // Find the cart item
-    const cartItem = user.getCartItem(id);
+    const cart = await cartItem.findOne({
+      where: { itemId: itemId, userId: user.userId },
+    });
 
-    if (!cartItem) {
-      return res.status(404).json({ error: "Cart item not found" });
+    if (!cart) {
+      return res.status(404).json({ error: "CartItem not found" });
     }
 
-    // Update the quantity of the cart item
-    cartItem.quantity = quantity;
-    await cartItem.save();
+    // Update the quantity of the cartItem
+    cart.quantity = quantity;
+    const updatedCartItem = await cart.save();
 
-    res.json({ message: "Cart item updated successfully" });
+    res.json({
+      message: "Cart item updated successfully",
+      data: updatedCartItem,
+    });
   } catch (error) {
     console.log("Error updating cart item: ", error);
     res.status(500).json({ error: "Failed to update cart item" });
@@ -289,5 +295,47 @@ exports.updateItemStock = async (req, res) => {
   } catch (error) {
     console.log("Error updating item stock: ", error);
     res.status(500).json({ error: "Failed to update item stock" });
+  }
+};
+
+// fetch cart items by id
+exports.fetchCartItemById = async (req, res) => {
+  try {
+    const { itemId } = req.body;
+
+    const user = req.user;
+
+    // Find the cart item by cartId
+    const cart = await cartItem.findOne({
+      where: { itemId },
+    });
+
+    if (!cart) {
+      return res.status(404).json({ error: "Cart item not found" });
+    }
+
+    const cartItems = await cartItem.findAll({
+      where: { userId: user.userId },
+    });
+
+    const items = await Item.findAll({ where: { itemId: itemId } });
+
+    const newArray = tableParser(items).map((item) => {
+      const matchingCartItem = tableParser(cartItems).find(
+        (cartItem) => item.itemId === cartItem.itemId
+      );
+      if (matchingCartItem) {
+        item.quantity = matchingCartItem.quantity;
+      }
+      return item;
+    });
+
+    return res.json({
+      message: "Cart item fetched successfully",
+      data: newArray,
+    });
+  } catch (error) {
+    console.log("Error fetching cart item: ", error);
+    return res.status(500).json({ error: "Failed to fetch cart item" });
   }
 };
