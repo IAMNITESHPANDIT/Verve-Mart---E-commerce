@@ -5,6 +5,18 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    productId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    addressId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   });
 
   Order.associate = (models) => {

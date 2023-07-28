@@ -1,13 +1,13 @@
 const payment = require("../models/payment");
-const User = require("../models/user");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Process payment
 exports.addPayment = async (req, res) => {
   try {
-    const { amount, token, currency } = req.body;
+    const { amount, token, currency, productId, addressId } = req.body;
     const userId = req.user.userId;
 
+    console.log("currency: ***" + currency);
     // Generate the orderId
     const orderId = generateOrderId();
 
@@ -25,20 +25,23 @@ exports.addPayment = async (req, res) => {
       amount: amount,
       paymentId: charge.id,
       cardLastFour: charge.source.last4,
-      // Include any other relevant payment details
+      userId: userId,
+      productId: productId,
+      addressId: addressId,
     };
-    await payment.create(paymentData);
+    const data = await payment.create(paymentData);
 
     // Update the user's payment details
 
-    const userData = {
-      paymentId: charge.id,
-      cardLastFour: charge.source.last4,
-      // Include any other relevant user payment details
-    };
-    await User.update(userData, { where: { userId } });
+    // const userData = {
+    //   paymentId: charge.id,
+    //   cardLastFour: charge.source.last4,
+    //   userId: userId,
+    //   // Include any other relevant user payment details
+    // };
+    // await User.update(userData, { where: { userId } });
 
-    res.status(200).json({ message: "Payment successful" });
+    res.status(200).json({ message: "Payment successful", data: data });
   } catch (error) {
     console.log("Error processing payment: ", error);
     res.status(500).json({ error: "Failed to process payment" });

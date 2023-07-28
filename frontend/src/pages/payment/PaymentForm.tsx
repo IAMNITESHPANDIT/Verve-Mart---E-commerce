@@ -1,8 +1,15 @@
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { post } from "../../services/networkCalls";
 import { ADD_PAYMENT } from "../../services/endPoints";
+import { calculatePrice } from "../../utils/handler/handler";
 
-const PaymentForm: React.FC = () => {
+interface iProps {
+  data: any;
+  productId: any;
+  addressId: any;
+}
+
+const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -35,30 +42,26 @@ const PaymentForm: React.FC = () => {
       };
       console.log("payment", token);
       console.log("dev", paymentMethod);
-
-      cardElement.clear();
+      addPayment(token?.id, cardElement);
     }
   };
 
-  const addPayment = async (
-    curreny: string,
-    token: string,
-    amount: number,
-    cb: any
-  ) => {
+  const addPayment = async (token: any, cardElement: any, currency?: any) => {
     const Token = sessionStorage.getItem("AUTH_TOKEN") || "";
     try {
       const response: any = await post(
         ADD_PAYMENT,
         {
           token: token,
-          curreny: curreny,
-          amount: amount,
+          currency: currency || "USD",
+          amount: calculatePrice(data[0]?.price, data[0]?.quantity),
+          productId: productId,
+          addressId: addressId,
         },
         Token
       );
-      console.log(response);
-      cb();
+      console.log("*******>>>>", response.data);
+      cardElement.clear();
     } catch (error) {
       console.log(error);
     }
