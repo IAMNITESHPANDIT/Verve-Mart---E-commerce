@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     orderId: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     amount: {
@@ -17,22 +17,31 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     cardLastFour: {
-      type: DataTypes.STRING(4),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     productId: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     addressId: {
-      type: DataTypes.UUID,
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });
+
+  Payment.createPayment = async (paymentData) => {
+    try {
+      const payment = await Payment.create(paymentData);
+      return payment;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   Payment.associate = (models) => {
     Payment.belongsTo(models.Order, {
