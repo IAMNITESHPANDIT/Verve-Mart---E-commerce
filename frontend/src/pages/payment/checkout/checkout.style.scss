@@ -2,6 +2,7 @@
 
 .checkout-page {
   padding: 20px;
+  margin-bottom: 150px;
 
   .row {
     display: flex;
@@ -60,6 +61,7 @@
 
   .payment-form {
     padding: 16px;
+    min-height: 262px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;

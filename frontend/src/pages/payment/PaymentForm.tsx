@@ -16,7 +16,6 @@ const PaymentForm: React.FC<iProps> = ({
   data,
   productId,
   addressId,
-  loading,
   setLoading,
 }) => {
   const stripe = useStripe();
@@ -85,7 +84,12 @@ const PaymentForm: React.FC<iProps> = ({
       <div>
         <label>
           <span className="me-3">Card</span>
-          <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
+          <CardElement
+            options={{
+              style: { base: { fontSize: "16px" } },
+              hidePostalCode: true,
+            }}
+          />
         </label>
       </div>
       <button type="submit" disabled={isProcessing} className="pay-button">

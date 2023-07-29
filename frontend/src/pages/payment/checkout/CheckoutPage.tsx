@@ -43,17 +43,15 @@ const CheckoutPage: React.FC = () => {
             <ProductDetails product={itemDetail} />
           </div>
           <div className="col-12 col-md-6">
-            <div className="checkout-page">
-              <Elements stripe={stripePromise}>
-                <PaymentForm
-                  data={itemDetail}
-                  addressId={params.addressId}
-                  productId={params.productId}
-                  loading={loading}
-                  setLoading={setLoading}
-                />
-              </Elements>
-            </div>
+            <Elements stripe={stripePromise}>
+              <PaymentForm
+                data={itemDetail}
+                addressId={params.addressId}
+                productId={params.productId}
+                loading={loading}
+                setLoading={setLoading}
+              />
+            </Elements>
           </div>
         </div>
       )}
