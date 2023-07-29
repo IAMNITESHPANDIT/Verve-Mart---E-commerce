@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { post } from "../../services/networkCalls";
 import { ADD_PAYMENT } from "../../services/endPoints";
@@ -13,6 +14,8 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -20,9 +23,12 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
       return;
     }
 
+    setIsProcessing(true); // Disable the button during payment processing
+
     const cardElement = elements.getElement(CardElement);
 
     if (!cardElement) {
+      setIsProcessing(false); // Re-enable the button if there's an error
       return;
     }
 
@@ -35,6 +41,7 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
 
     if (error) {
       console.error("Error creating payment method:", error);
+      setIsProcessing(false); // Re-enable the button if there's an error
     } else {
       // Send the payment method ID to your backend server for processing
       const paymentData = {
@@ -54,16 +61,19 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
         {
           token: token,
           currency: currency || "USD",
-          amount: calculatePrice(data[0]?.price, data[0]?.quantity),
+          amount: calculatePrice(data[0]?.price, data[0]?.quantity) * 100,
           productId: productId,
           addressId: addressId,
         },
         Token
       );
-      console.log("*******>>>>", response.data);
       cardElement.clear();
+      // ... handle response
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsProcessing(false); // Re-enable the button after payment processing
+      //cardElement.clear(); // Clear the card element if needed
     }
   };
 
@@ -75,7 +85,9 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
           <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
         </label>
       </div>
-      <button type="submit">Pay Now</button>
+      <button type="submit" disabled={isProcessing}>
+        {isProcessing ? "Processing..." : "Pay Now"}
+      </button>
     </form>
   );
 };
