@@ -3,7 +3,7 @@ import Login from "../components/login/Login";
 import { useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "../components/Dashboard/Dashboard";
+import Dashboard from "../components/dashboard/Dashboard";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import CategoryItems from "../pages/category-items/CategoryItems";

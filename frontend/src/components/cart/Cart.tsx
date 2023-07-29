@@ -3,7 +3,7 @@ import { GET_CARTS_ITEM, UPDATE_ITEM_IN_CART } from "../../services/endPoints";
 import { get, update } from "../../services/networkCalls";
 import { calculatePrice } from "../../utils/handler/handler";
 import { ToastOnFailure } from "../../utils/toast/message";
-import CustomButton from "../CustomButton/CustomButton";
+import CustomButton from "../customButton/CustomButton";
 import "./card.style.scss";
 import { useState, useEffect } from "react";
 import { FaLessThan, FaGreaterThan } from "react-icons/fa";
