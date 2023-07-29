@@ -8,9 +8,17 @@ interface iProps {
   data: any;
   productId: any;
   addressId: any;
+  loading: boolean;
+  setLoading: any;
 }
 
-const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
+const PaymentForm: React.FC<iProps> = ({
+  data,
+  productId,
+  addressId,
+  loading,
+  setLoading,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -18,7 +26,6 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (!stripe || !elements) {
       return;
     }
@@ -43,18 +50,13 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
       console.error("Error creating payment method:", error);
       setIsProcessing(false); // Re-enable the button if there's an error
     } else {
-      // Send the payment method ID to your backend server for processing
-      const paymentData = {
-        paymentMethodId: paymentMethod?.id,
-      };
-      console.log("payment", token);
-      console.log("dev", paymentMethod);
       addPayment(token?.id, cardElement);
     }
   };
 
   const addPayment = async (token: any, cardElement: any, currency?: any) => {
     const Token = sessionStorage.getItem("AUTH_TOKEN") || "";
+    setLoading(true);
     try {
       const response: any = await post(
         ADD_PAYMENT,
@@ -67,25 +69,26 @@ const PaymentForm: React.FC<iProps> = ({ data, productId, addressId }) => {
         },
         Token
       );
+      setLoading(false);
       cardElement.clear();
-      // ... handle response
     } catch (error) {
+      setLoading(false);
       console.log(error);
     } finally {
-      setIsProcessing(false); // Re-enable the button after payment processing
-      //cardElement.clear(); // Clear the card element if needed
+      setIsProcessing(false);
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="payment-form">
       <div>
         <label>
-          Card details
+          <span className="me-3">Card</span>
           <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
         </label>
       </div>
-      <button type="submit" disabled={isProcessing}>
+      <button type="submit" disabled={isProcessing} className="pay-button">
         {isProcessing ? "Processing..." : "Pay Now"}
       </button>
     </form>
