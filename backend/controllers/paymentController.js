@@ -1,44 +1,46 @@
-const payment = require("../models/payment");
-const User = require("../models/user");
+const { Payment } = require("../sequelize/index");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Process payment
 exports.addPayment = async (req, res) => {
   try {
-    const { amount, token, currency } = req.body;
+    const { amount, token, currency, productId, addressId } = req.body;
     const userId = req.user.userId;
 
-    // Generate the orderId
-    const orderId = generateOrderId();
-
-    // Create a charge using Stripe
-    const charge = await stripe.charges.create({
+    // Create a payment intent using Stripe
+    const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
       currency: currency,
-      source: token,
-      description: "Payment for Order #" + orderId,
+      payment_method_types: ["card"],
+      payment_method_data: {
+        type: "card",
+        card: {
+          token: token,
+        },
+      },
+      confirm: true,
     });
+
+    // Retrieve the PaymentMethod associated with the PaymentIntent
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      paymentIntent.payment_method
+    );
 
     // Save the payment details in the database
     const paymentData = {
-      orderId: orderId,
-      amount: amount,
-      paymentId: charge.id,
-      cardLastFour: charge.source.last4,
-      // Include any other relevant payment details
+      orderId: generateOrderId(),
+      amount: removLastTwoDigits(amount),
+      paymentId: paymentIntent.id,
+      cardLastFour: paymentMethod.card.last4,
+      userId: userId,
+      productId: productId,
+      addressId: addressId,
     };
-    await payment.create(paymentData);
 
-    // Update the user's payment details
+    // Use the createPayment method from the model to create a new payment record
+    const data = await Payment.createPayment(paymentData);
 
-    const userData = {
-      paymentId: charge.id,
-      cardLastFour: charge.source.last4,
-      // Include any other relevant user payment details
-    };
-    await User.update(userData, { where: { userId } });
-
-    res.status(200).json({ message: "Payment successful" });
+    res.status(200).json({ message: "Payment successfull", data: data });
   } catch (error) {
     console.log("Error processing payment: ", error);
     res.status(500).json({ error: "Failed to process payment" });
@@ -46,10 +48,8 @@ exports.addPayment = async (req, res) => {
 };
 
 // Function to generate a unique orderId
-
 function generateOrderId() {
   // Generate a random alphanumeric string
-
   const randomString = Math.random().toString(36).substring(2, 10);
 
   // Get the current timestamp
@@ -59,4 +59,8 @@ function generateOrderId() {
   const orderId = randomString + timestamp;
 
   return orderId;
+}
+
+function removLastTwoDigits(amount) {
+  return (amount / 100).toFixed(0);
 }

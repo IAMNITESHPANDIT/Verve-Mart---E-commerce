@@ -1,21 +1,40 @@
+import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { post } from "../../services/networkCalls";
 import { ADD_PAYMENT } from "../../services/endPoints";
+import { calculatePrice } from "../../utils/handler/handler";
 
-const PaymentForm: React.FC = () => {
+interface iProps {
+  data: any;
+  productId: any;
+  addressId: any;
+  loading: boolean;
+  setLoading: any;
+}
+
+const PaymentForm: React.FC<iProps> = ({
+  data,
+  productId,
+  addressId,
+  setLoading,
+}) => {
   const stripe = useStripe();
   const elements = useElements();
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (!stripe || !elements) {
       return;
     }
 
+    setIsProcessing(true); // Disable the button during payment processing
+
     const cardElement = elements.getElement(CardElement);
 
     if (!cardElement) {
+      setIsProcessing(false); // Re-enable the button if there's an error
       return;
     }
 
@@ -28,51 +47,54 @@ const PaymentForm: React.FC = () => {
 
     if (error) {
       console.error("Error creating payment method:", error);
+      setIsProcessing(false); // Re-enable the button if there's an error
     } else {
-      // Send the payment method ID to your backend server for processing
-      const paymentData = {
-        paymentMethodId: paymentMethod?.id,
-      };
-      console.log("payment", token);
-      console.log("dev", paymentMethod);
-
-      cardElement.clear();
+      addPayment(token?.id, cardElement);
     }
   };
 
-  const addPayment = async (
-    curreny: string,
-    token: string,
-    amount: number,
-    cb: any
-  ) => {
+  const addPayment = async (token: any, cardElement: any, currency?: any) => {
     const Token = sessionStorage.getItem("AUTH_TOKEN") || "";
+    setLoading(true);
     try {
       const response: any = await post(
         ADD_PAYMENT,
         {
           token: token,
-          curreny: curreny,
-          amount: amount,
+          currency: currency || "USD",
+          amount: calculatePrice(data[0]?.price, data[0]?.quantity) * 100,
+          productId: productId,
+          addressId: addressId,
         },
         Token
       );
-      console.log(response);
-      cb();
+      setLoading(false);
+      cardElement.clear();
     } catch (error) {
+      setLoading(false);
       console.log(error);
+    } finally {
+      setIsProcessing(false);
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="payment-form">
       <div>
         <label>
-          Card details
-          <CardElement options={{ style: { base: { fontSize: "16px" } } }} />
+          <span className="me-3">Card</span>
+          <CardElement
+            options={{
+              style: { base: { fontSize: "16px" } },
+              hidePostalCode: true,
+            }}
+          />
         </label>
       </div>
-      <button type="submit">Pay Now</button>
+      <button type="submit" disabled={isProcessing} className="pay-button">
+        {isProcessing ? "Processing..." : "Pay Now"}
+      </button>
     </form>
   );
 };

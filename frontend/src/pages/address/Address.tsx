@@ -16,7 +16,7 @@ import { ToastOnSuccess } from "../../utils/toast/message";
 
 import AddressRadio from "./radios/AddressRadio";
 
-import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomButton from "../../components/customButton/CustomButton";
 
 import { useNavigate, useParams } from "react-router-dom";
 

@@ -1,13 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import { GET_CARTS_ITEM, UPDATE_ITEM_IN_CART } from "../../services/endPoints";
 import { get, update } from "../../services/networkCalls";
 import { calculatePrice } from "../../utils/handler/handler";
 import { ToastOnFailure } from "../../utils/toast/message";
-import CustomButton from "../CustomButton/CustomButton";
+import CustomButton from "../customButton/CustomButton";
 import "./card.style.scss";
 import { useState, useEffect } from "react";
 import { FaLessThan, FaGreaterThan } from "react-icons/fa";
 const CartList = (props: any) => {
   const [cartItems, setCartItems] = useState<any>([]);
+  const navigate = useNavigate();
 
   const handleDecrement = (id: string, quantity: number) => {
     if (quantity <= 1) {
@@ -87,6 +89,11 @@ const CartList = (props: any) => {
     }
   };
 
+  const navigateAddress = (id: string) => {
+    navigate(`/checkout-page/${id}`);
+    return;
+  };
+
   useEffect(() => {
     fetchCartItems();
   }, []);
@@ -128,7 +135,7 @@ const CartList = (props: any) => {
                     <CustomButton
                       btnClsName="btn-buy-now"
                       btnName="Buy Now"
-                      btnEvent={() => console.log("btn event")}
+                      btnEvent={() => navigateAddress(item.itemId)}
                     />
                   </div>
                 </div>
