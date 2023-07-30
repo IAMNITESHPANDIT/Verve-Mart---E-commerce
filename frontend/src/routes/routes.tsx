@@ -10,6 +10,8 @@ import CategoryItems from "../pages/category-items/CategoryItems";
 import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
 import CartList from "../components/cart/Cart";
+import OrderPage from "../pages/order/Orders";
+import ProductOverview from "../pages/product-detail/ProductOverview";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -58,6 +60,15 @@ function RoutePath() {
         ></Route>
 
         <Route
+          path="item/:itemName/:itemId"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <ProductOverview />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
           path="/checkout-page/:productId"
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
@@ -80,6 +91,15 @@ function RoutePath() {
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
               <CartList />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <OrderPage />
             </ProtectedRoute>
           }
         ></Route>

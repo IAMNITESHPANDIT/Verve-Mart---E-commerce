@@ -23,3 +23,7 @@ export const ADD_ITEM_IN_CART = "items/cart";
 export const UPDATE_ITEM_IN_CART = "items/cart";
 
 export const GET_CARTS_ITEM_BY_ITEM_ID = "items/cart/identity";
+
+export const GET_ORDERS = "order/getAllOrders";
+
+export const GET_ITEM_BY_ID = "items/getItemById";

@@ -1,10 +1,11 @@
-const { Payment } = require("../sequelize/index");
+const { Payment, cartItem } = require("../sequelize/index");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Process payment
 exports.addPayment = async (req, res) => {
   try {
-    const { amount, token, currency, productId, addressId } = req.body;
+    const { amount, token, currency, productId, addressId, quantity } =
+      req.body;
     const userId = req.user.userId;
 
     // Create a payment intent using Stripe
@@ -35,12 +36,14 @@ exports.addPayment = async (req, res) => {
       userId: userId,
       productId: productId,
       addressId: addressId,
+      quantity: quantity,
     };
 
     // Use the createPayment method from the model to create a new payment record
     const data = await Payment.createPayment(paymentData);
-
     res.status(200).json({ message: "Payment successfull", data: data });
+    await cartItem.destroy({ where: { itemId: productId } });
+    return;
   } catch (error) {
     console.log("Error processing payment: ", error);
     res.status(500).json({ error: "Failed to process payment" });

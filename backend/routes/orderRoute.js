@@ -7,4 +7,6 @@ const orderController = require("../controllers/orderController");
 
 router.get("/totalOrders", authenticateUser, orderController.getTotalOrders);
 
+router.get("/getAllOrders", authenticateUser, orderController.getAllOrdersById);
+
 module.exports = router;
