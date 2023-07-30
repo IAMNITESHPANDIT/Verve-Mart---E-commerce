@@ -4,7 +4,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // Process payment
 exports.addPayment = async (req, res) => {
   try {
-    const { amount, token, currency, productId, addressId } = req.body;
+    const { amount, token, currency, productId, addressId, quantity } =
+      req.body;
     const userId = req.user.userId;
 
     // Create a payment intent using Stripe
@@ -35,6 +36,7 @@ exports.addPayment = async (req, res) => {
       userId: userId,
       productId: productId,
       addressId: addressId,
+      quantity: quantity,
     };
 
     // Use the createPayment method from the model to create a new payment record

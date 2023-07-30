@@ -65,6 +65,7 @@ const PaymentForm: React.FC<iProps> = ({
           amount: calculatePrice(data[0]?.price, data[0]?.quantity) * 100,
           productId: productId,
           addressId: addressId,
+          quantity: data[0]?.quantity,
         },
         Token
       );

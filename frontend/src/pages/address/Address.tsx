@@ -43,6 +43,7 @@ const AddressForm: React.FC = () => {
   const user: any = JSON.parse(sessionStorage.getItem("USER_DETAIL") || "{}");
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    console.log("dev------>", values);
     try {
       setSubmitting(false);
       const response: any = await post(
@@ -52,7 +53,7 @@ const AddressForm: React.FC = () => {
           street: values.street,
           country: "India",
           state: values.state,
-          dist: values.dist,
+          dist: values.district,
           pincode: values.pinCode,
           userId: user.userId,
           phoneNumber: values.phoneNumber,
