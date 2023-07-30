@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./product.style.scss";
 import { useParams } from "react-router-dom";
 import { post } from "../../services/networkCalls";

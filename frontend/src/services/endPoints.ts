@@ -27,3 +27,5 @@ export const GET_CARTS_ITEM_BY_ITEM_ID = "items/cart/identity";
 export const GET_ORDERS = "order/getAllOrders";
 
 export const GET_ITEM_BY_ID = "items/getItemById";
+
+export const GET_USER_DETAIL = "auth/getUserDetail";
