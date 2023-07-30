@@ -1,14 +1,15 @@
-// OrderPage.js
 import { useEffect, useState } from "react";
 import "./order.style.scss";
 import { get } from "../../services/networkCalls";
 import { GET_ORDERS } from "../../services/endPoints";
 import GenricLoader from "../../utils/loader/Loader";
 import { formatDate } from "../../utils/handler/handler";
+import { useNavigate } from "react-router-dom";
 
 const OrderPage = () => {
   const [orders, setOrders] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const fetchOrders = async () => {
     try {
@@ -18,7 +19,6 @@ const OrderPage = () => {
         sessionStorage.getItem("AUTH_TOKEN") || ""
       );
       setOrders(response.data);
-      console.log("reponse data ", response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -26,6 +26,10 @@ const OrderPage = () => {
     }
   };
 
+  const navigateScreen = (itemName: string, itemId: string) => {
+    navigate(`/item/${itemName}/${itemId}`);
+    return;
+  };
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -39,7 +43,13 @@ const OrderPage = () => {
           <h1>Your Orders</h1>
           {orders.length > 0 ? (
             orders.map((order: any) => (
-              <div key={order.orderId} className="order">
+              <div
+                key={order.orderId}
+                className="order"
+                onClick={() =>
+                  navigateScreen(order.product.itemName, order.product.itemId)
+                }
+              >
                 <div className="order-info">
                   <h3>Order ID: {order.orderId}</h3>
                   <p>Date: {formatDate(order.date)}</p>

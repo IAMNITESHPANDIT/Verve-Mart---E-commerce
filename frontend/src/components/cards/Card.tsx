@@ -8,9 +8,10 @@ import { ToastOnSuccess } from "../../utils/toast/message";
 
 interface cardProps {
   data: any;
+  navigateScreen: any;
 }
 
-const CardItem: React.FC<cardProps> = ({ data }) => {
+const CardItem: React.FC<cardProps> = ({ data, navigateScreen }) => {
   const navigate = useNavigate();
 
   const addToCart = async (e: any, id: string) => {
@@ -50,7 +51,12 @@ const CardItem: React.FC<cardProps> = ({ data }) => {
                   variant="top"
                   src={item.image}
                   className="item-image"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateScreen(item.itemName, item.itemId);
+                  }}
                 />
+
                 <Card.Body>
                   <Card.Title className="item-title">
                     {item.itemName}

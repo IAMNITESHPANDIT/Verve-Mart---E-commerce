@@ -3,6 +3,8 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { post } from "../../services/networkCalls";
 import { ADD_PAYMENT } from "../../services/endPoints";
 import { calculatePrice } from "../../utils/handler/handler";
+import { useNavigate } from "react-router-dom";
+import { ToastOnFailure, ToastOnSuccess } from "../../utils/toast/message";
 
 interface iProps {
   data: any;
@@ -20,6 +22,7 @@ const PaymentForm: React.FC<iProps> = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -70,8 +73,11 @@ const PaymentForm: React.FC<iProps> = ({
         Token
       );
       setLoading(false);
-      cardElement.clear();
-    } catch (error) {
+      ToastOnSuccess(response.data.message);
+      navigate("/orders");
+      // cardElement.clear();
+    } catch (error: any) {
+      ToastOnFailure(error.message);
       setLoading(false);
       console.log(error);
     } finally {

@@ -22,8 +22,6 @@ const Header = () => {
     return;
   };
 
-  console.log("dev", cart);
-
   return (
     <header className="verve-header">
       <Container>

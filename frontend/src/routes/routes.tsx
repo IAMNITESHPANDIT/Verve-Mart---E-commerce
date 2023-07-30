@@ -11,6 +11,7 @@ import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
 import CartList from "../components/cart/Cart";
 import OrderPage from "../pages/order/Orders";
+import ProductOverview from "../pages/product-detail/ProductOverview";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -54,6 +55,15 @@ function RoutePath() {
           element={
             <PublicRoute isVerified={false} redirectPath="/Dashboard">
               <CategoryItems />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="item/:itemName/:itemId"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <ProductOverview />
             </PublicRoute>
           }
         ></Route>

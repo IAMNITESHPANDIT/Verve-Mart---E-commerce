@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { GET_CATEGORY_BY_NAME } from "../../services/endPoints";
 import { post } from "../../services/networkCalls";
@@ -8,6 +8,7 @@ import GenricLoader from "../../utils/loader/Loader";
 function CategoryItems() {
   const params = useParams();
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const [categoryItem, setCategoryItem] = useState({
     categoryId: "",
@@ -31,9 +32,15 @@ function CategoryItems() {
       console.log(error);
     }
   };
+
+  const navigateScreen = (itemName: string, itemId: string) => {
+    navigate(`/item/${itemName}/${itemId}`);
+    return;
+  };
   useEffect(() => {
     fetchData();
   }, []);
+
   return (
     <>
       {loading ? (
@@ -41,7 +48,10 @@ function CategoryItems() {
       ) : (
         <>
           <div className="item-list">
-            <CardItem data={categoryItem.items} />
+            <CardItem
+              data={categoryItem.items}
+              navigateScreen={navigateScreen}
+            />
           </div>
         </>
       )}
