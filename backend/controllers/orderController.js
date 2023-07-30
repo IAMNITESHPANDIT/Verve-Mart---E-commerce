@@ -37,8 +37,15 @@ exports.getAllOrdersById = async (req, res) => {
     // Extract the required details for each order
     const orders = await Promise.all(
       paymentDetails.map(async (payment) => {
-        const { orderId, amount, productId, addressId, userId, quantity } =
-          payment;
+        const {
+          orderId,
+          amount,
+          productId,
+          addressId,
+          userId,
+          quantity,
+          createdAt,
+        } = payment;
 
         // Fetch product details based on productId
         const product = await Item.findByPk(productId);
@@ -54,6 +61,7 @@ exports.getAllOrdersById = async (req, res) => {
           product: product,
           addressId,
           address: address,
+          date: createdAt,
         };
       })
     );

@@ -10,6 +10,7 @@ import CategoryItems from "../pages/category-items/CategoryItems";
 import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
 import CartList from "../components/cart/Cart";
+import OrderPage from "../pages/order/Orders";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -80,6 +81,15 @@ function RoutePath() {
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
               <CartList />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <OrderPage />
             </ProtectedRoute>
           }
         ></Route>
