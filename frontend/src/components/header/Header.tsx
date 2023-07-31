@@ -51,7 +51,9 @@ const Header = () => {
                 <span className="option-line-one">
                   Hello,
                   {data?.name ? (
-                    data?.name
+                    <span onClick={() => navigateScreen(`/profile`)}>
+                      {data?.name}
+                    </span>
                   ) : (
                     <span onClick={() => navigateScreen(`/Login`)}>
                       {" "}
@@ -59,7 +61,12 @@ const Header = () => {
                     </span>
                   )}
                 </span>
-                <span className="option-line-two">Account &amp; Lists</span>
+                <span
+                  className="option-line-two"
+                  onClick={() => navigateScreen(`/profile`)}
+                >
+                  Account &amp; Lists
+                </span>
               </div>
               {data?.name && (
                 <>
@@ -72,10 +79,10 @@ const Header = () => {
                       &amp; Orders
                     </span>
                   </div>
-                  <div className="verve-header__nav-option">
+                  {/* <div className="verve-header__nav-option">
                     <span className="option-line-one">Your</span>
                     <span className="option-line-two">Prime</span>
-                  </div>
+                  </div> */}
                   <div className="verve-header__nav-cart">
                     <span className="cart-count">{cart.length}</span>
                     <span

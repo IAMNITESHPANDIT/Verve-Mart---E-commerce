@@ -74,7 +74,7 @@ const PaymentForm: React.FC<iProps> = ({
       );
       setLoading(false);
       ToastOnSuccess(response.data.message);
-      navigate("/orders");
+      navigate("/orders", { replace: true });
       // cardElement.clear();
     } catch (error: any) {
       ToastOnFailure(error.message);

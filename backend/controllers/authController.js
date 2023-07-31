@@ -158,27 +158,62 @@ exports.signupUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-  // const token = req.cookies.token; // Assuming the token is stored in a cookie
-  const token = req.header("Authorization");
-
-  // Verify the token and extract the user/admin ID
   try {
-    const formattedToken = token.replace("Bearer ", "").trim();
-    const decoded = jwt.verify(formattedToken, jwtSecret);
-    const { userId, adminId } = decoded;
-
-    // Delete the token from the database
-    if (userId) {
-      await User.update({ token: null }, { where: { userId: userId } });
-    } else if (adminId) {
-      await User.update({ token: null }, { where: { userId: adminId } });
-    }
-
-    // Clear the JWT token from the client-side
-    // res.clearCookie("token");
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     console.log("Error logging out: ", error);
     res.status(500).json({ error: "Failed to logout" });
+  }
+};
+
+exports.updateUser = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const { name, email, phoneNumber } = req.body;
+
+    // Find the user by userId
+    const user = await User.findOne({ where: { userId } });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Update user details
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.phoneNumber = phoneNumber || user.phoneNumber;
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "User details updated successfully", data: user });
+  } catch (error) {
+    console.log("Error updating user details:", error);
+    return res.status(500).json({ error: "Failed to update user details" });
+  }
+};
+
+exports.getUserDetails = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findOne({ where: { userId } });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const userDetails = {
+      name: user.name,
+      email: user.email,
+      phone: user.phoneNumber,
+    };
+    return res.status(200).json({
+      message: "User details fetched successfully",
+      data: userDetails,
+    });
+  } catch (error) {
+    console.log("Error fetching user details:", error);
+    return res.status(500).json({ error: "Failed to fetch user details" });
   }
 };
