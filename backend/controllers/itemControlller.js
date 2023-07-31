@@ -186,8 +186,9 @@ exports.fetchExistingCartItems = async (req, res) => {
 
 // Add item to cart
 exports.addItemToCart = async (req, res) => {
+  const userId = req.user.userId;
   try {
-    const { itemId, userId } = req.body;
+    const { itemId } = req.body;
 
     const item = await Item.findOne({
       where: {

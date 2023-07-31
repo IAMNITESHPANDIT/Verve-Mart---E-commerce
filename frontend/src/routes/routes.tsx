@@ -109,7 +109,7 @@ function RoutePath() {
           path="/profile"
           element={
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
-              <ProfileSection />
+              <ProfileSection setSigninStatus={setSigninStatus} />
             </ProtectedRoute>
           }
         ></Route>

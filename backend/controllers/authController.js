@@ -158,24 +158,7 @@ exports.signupUser = async (req, res) => {
 };
 
 exports.logoutUser = async (req, res) => {
-  // const token = req.cookies.token; // Assuming the token is stored in a cookie
-  const token = req.header("Authorization");
-
-  // Verify the token and extract the user/admin ID
   try {
-    const formattedToken = token.replace("Bearer ", "").trim();
-    const decoded = jwt.verify(formattedToken, jwtSecret);
-    const { userId, adminId } = decoded;
-
-    // Delete the token from the database
-    if (userId) {
-      await User.update({ token: null }, { where: { userId: userId } });
-    } else if (adminId) {
-      await User.update({ token: null }, { where: { userId: adminId } });
-    }
-
-    // Clear the JWT token from the client-side
-    // res.clearCookie("token");
     res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     console.log("Error logging out: ", error);

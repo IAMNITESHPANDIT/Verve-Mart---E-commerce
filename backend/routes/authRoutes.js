@@ -16,7 +16,7 @@ router.post("/loginAdmin", authController.loginAdmin);
 router.post("/registerAdmin", authController.registerAdmin);
 
 router.post(
-  "/updateUser",
+  "/updateUserDetail",
   authMiddleware.authenticateUser,
   authController.updateUser
 );
@@ -29,6 +29,10 @@ router.get(
 
 // logout admin and user if exists
 
-router.get("/logout", authController.logoutUser);
+router.get(
+  "/logout",
+  authMiddleware.authenticateUser,
+  authController.logoutUser
+);
 
 module.exports = router;

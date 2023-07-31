@@ -2,30 +2,51 @@ import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./profile.style.scss";
-import { get } from "../../services/networkCalls";
-import { GET_USER_DETAIL } from "../../services/endPoints";
+import { get, post } from "../../services/networkCalls";
+import {
+  GET_USER_DETAIL,
+  LOGOUT_USER,
+  UPDATE_USER_DETAIL,
+} from "../../services/endPoints";
+import { ToastOnFailure, ToastOnSuccess } from "../../utils/toast/message";
+import GenricLoader from "../../utils/loader/Loader";
 
 const ProfileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
-  phone: Yup.string().required("Phone is required"),
+  phone: Yup.string()
+    .required("Phone is required")
+    .matches(/^\d{10}$/, "Phone must be 10 digits"),
 });
 
-const ProfileSection: React.FC = (props: any) => {
+interface profileProps {
+  setSigninStatus: any;
+}
+const ProfileSection: React.FC<profileProps> = ({ setSigninStatus }) => {
   const [profile, setProfile] = useState({
     name: "",
     email: "",
     phone: "",
   });
 
-  const [initialValue, setInitialValues] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const handleSubmit = (values: any) => {
-    // onUpdateProfile?.(values);
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+    try {
+      const response: any = await post(
+        UPDATE_USER_DETAIL,
+        {
+          name: values.name,
+          email: values.email,
+          phoneNumber: values.phone,
+        },
+        sessionStorage.getItem("AUTH_TOKEN") || ""
+      );
+      ToastOnSuccess(response.message);
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      // Set isSubmitting to false regardless of success or failure
+      setSubmitting(false);
+    }
   };
 
   const fetchDetails = async () => {
@@ -44,13 +65,19 @@ const ProfileSection: React.FC = (props: any) => {
     }
   };
 
-  useEffect(() => {
-    setInitialValues({
-      name: profile.name,
-      email: profile.email,
-      phone: profile.phone,
-    });
-  }, [profile]);
+  const logoutUser = async () => {
+    try {
+      const response: any = await get(
+        LOGOUT_USER,
+        sessionStorage.getItem("AUTH_TOKEN") || ""
+      );
+      ToastOnSuccess(response.message);
+      sessionStorage.clear();
+      setSigninStatus(false);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   useEffect(() => {
     fetchDetails();
@@ -61,12 +88,14 @@ const ProfileSection: React.FC = (props: any) => {
       <div className="profile-details">
         <h2>Edit Profile</h2>
         <Formik
-          initialValues={initialValue}
+          initialValues={profile} // Use profile as initial values
           validationSchema={ProfileSchema}
           onSubmit={handleSubmit}
+          enableReinitialize={true} // Add enableReinitialize prop
         >
           {({ isSubmitting }) => (
             <Form>
+              {isSubmitting && <GenricLoader loading={isSubmitting} />}
               <div className="form-group">
                 <label htmlFor="name">Name</label>
                 <Field type="text" id="name" name="name" />
@@ -93,10 +122,7 @@ const ProfileSection: React.FC = (props: any) => {
                 >
                   {isSubmitting ? "Updating..." : "Update Profile"}
                 </button>
-                <button
-                  className="logout-button"
-                  onClick={() => console.log("dev")}
-                >
+                <button className="logout-button" onClick={() => logoutUser()}>
                   Logout
                 </button>
               </div>
