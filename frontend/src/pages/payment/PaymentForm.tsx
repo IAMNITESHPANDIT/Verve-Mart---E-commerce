@@ -73,7 +73,7 @@ const PaymentForm: React.FC<iProps> = ({
         Token
       );
       setLoading(false);
-      ToastOnSuccess(response.data.message);
+      ToastOnSuccess(response.message);
       navigate("/orders", { replace: true });
       // cardElement.clear();
     } catch (error: any) {
