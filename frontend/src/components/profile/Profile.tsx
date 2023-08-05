@@ -66,6 +66,7 @@ const ProfileSection: React.FC<profileProps> = ({ setSigninStatus }) => {
   };
 
   const logoutUser = async () => {
+    // e.stopPropagation();
     try {
       const response: any = await get(
         LOGOUT_USER,
@@ -122,7 +123,11 @@ const ProfileSection: React.FC<profileProps> = ({ setSigninStatus }) => {
                 >
                   {isSubmitting ? "Updating..." : "Update Profile"}
                 </button>
-                <button className="logout-button" onClick={() => logoutUser()}>
+                <button
+                  className="logout-button"
+                  onClick={() => logoutUser()}
+                  type="button"
+                >
                   Logout
                 </button>
               </div>

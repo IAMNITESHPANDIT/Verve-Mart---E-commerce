@@ -13,9 +13,13 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Redirect to the login page
-      console.log("aut ", error);
+    const requestUrl = error.config.url;
+    const endpoint = requestUrl.split("3000")[1];
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      endpoint !== "/auth/login"
+    ) {
       sessionStorage.clear();
       window.location.href = "/login";
     }
