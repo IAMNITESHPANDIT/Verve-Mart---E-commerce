@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Verve-mart-app",
-    "slug": "Verve-mart-app",
+    "name": "App",
+    "slug": "App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
