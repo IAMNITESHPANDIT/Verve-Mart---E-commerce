@@ -79,6 +79,14 @@ const Login = ({ setSigninStatus }) => {
             >
               <Text>{isSubmitting ? "Submitting..." : "Login"}</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.signUpButton}
+              // onPress={handleSubmit}
+              disabled={isSubmitting}
+            >
+              <Text>Sign Up</Text>
+            </TouchableOpacity>
           </View>
         )}
       </Formik>
@@ -110,6 +118,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#febd69",
     borderRadius: 5,
     padding: 10,
+    alignItems: "center",
+  },
+  signUpButton: {
+    backgroundColor: "#febd69",
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
     alignItems: "center",
   },
   buttonText: {
