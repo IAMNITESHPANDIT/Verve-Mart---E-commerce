@@ -1,8 +1,9 @@
 import axios from "axios";
+import { BASE_URL } from "./endPoints";
 // Create an instance of axios
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: BASE_URL,
 });
 
 // Add a response interceptor
@@ -19,10 +20,11 @@ instance.interceptors.response.use(
       error.response.status === 401 &&
       endpoint !== "/auth/login"
     ) {
-      sessionStorage.clear();
-      window.location.href = "/login";
+      // sessionStorage.clear();
+      // window.location.href = "/login";
     }
-    // return Promise.reject(error);
+    console.log(requestUrl);
+    return Promise.reject(error);
   }
 );
 
@@ -51,11 +53,10 @@ async function post(endpoint, body, token) {
 
   try {
     const response = await instance.post(endpoint, body, config);
-    console.log("response checking ", response);
     return response?.data ? response.data : response;
   } catch (error) {
     console.error("Error occurred during POST request:", error);
-    // throw error;
+    return error.error;
   }
 }
 
