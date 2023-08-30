@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -6,8 +6,9 @@ import * as Yup from "yup";
 import logoImage from "../../assests/images/logo.png";
 import { loginStyles } from "./login.style";
 import { post } from "../../services/networkCalls";
-import { BASE_URL, LOGIN } from "../../services/endPoints";
+import { LOGIN } from "../../services/endPoints";
 import { ToastOnFailure, ToastOnSuccess } from "../../utils/toast/message";
+import { saveData } from "../../utils/storage/storage";
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
@@ -17,19 +18,16 @@ const LoginSchema = Yup.object().shape({
 
 const Login = ({ setSigninStatus }) => {
   // const dispatch = useDispatch();
+  const [isFlag, setIsFlag] = useState(false);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const data = await post(`${BASE_URL}${LOGIN}`, values);
-      if (data) {
-        ToastOnSuccess(data?.message);
+      const response = await post(LOGIN, values);
+      if (response) {
+        ToastOnSuccess(response?.message);
+        await saveData("AUTH_TOKEN", response.data.token);
       }
-      console.log("********************dev", data);
-
-      // dispatch(loggedIn(data.data));
-      // setSigninStatus(true);
     } catch (error) {
-      console.log("error", error);
       ToastOnFailure(error.response.data.error);
     } finally {
       setSubmitting(false);

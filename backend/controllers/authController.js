@@ -149,7 +149,9 @@ exports.signupUser = async (req, res) => {
     });
 
     // Return the created user and token
-    res.status(201).json({ user, token });
+    res
+      .status(201)
+      .json({ user, token, message: "User is Created Successfully" });
   } catch (error) {
     // Handle registration error
     console.log("User registration error: ", error);
