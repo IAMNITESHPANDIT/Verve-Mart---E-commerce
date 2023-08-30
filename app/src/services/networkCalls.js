@@ -1,13 +1,12 @@
 import axios from "axios";
 import { BASE_URL } from "./endPoints";
-// Create an instance of axios
 
+// Create an instance of axios
 const instance = axios.create({
   baseURL: BASE_URL,
 });
 
 // Add a response interceptor
-
 instance.interceptors.response.use(
   (response) => {
     return response;
@@ -20,17 +19,16 @@ instance.interceptors.response.use(
       error.response.status === 401 &&
       endpoint !== "/auth/login"
     ) {
-      // sessionStorage.clear();
-      // window.location.href = "/login";
+      // Handle unauthorized access here, like redirecting to login
+      // For React Native, you might use navigation.navigate('Login') from React Navigation
     }
-    console.log(requestUrl);
+    console.log(error);
     return Promise.reject(error);
   }
 );
 
 // Generic function for making GET requests
-
-async function get(endpoint, token) {
+export async function get(endpoint, token) {
   const config = {
     headers: token ? { Authorization: `${token}` } : undefined,
   };
@@ -40,13 +38,12 @@ async function get(endpoint, token) {
     return response.data;
   } catch (error) {
     console.error("Error occurred during GET request:", error);
-    // throw error;
+    throw error; // Rethrow the error to handle it at the caller's level
   }
 }
 
 // Generic function for making POST requests
-
-async function post(endpoint, body, token) {
+export async function post(endpoint, body, token) {
   const config = {
     headers: token ? { Authorization: `${token}` } : undefined,
   };
@@ -55,14 +52,13 @@ async function post(endpoint, body, token) {
     const response = await instance.post(endpoint, body, config);
     return response?.data ? response.data : response;
   } catch (error) {
-    console.error("Error occurred during POST request:", error);
-    return error.error;
+    // console.error("Error occurred during POST request:", error);
+    throw error; // Rethrow the error to handle it at the caller's level
   }
 }
 
 // Generic function for making DELETE requests
-
-async function del(endpoint, token) {
+export async function del(endpoint, token) {
   const config = {
     headers: token ? { Authorization: `${token}` } : undefined,
   };
@@ -72,13 +68,12 @@ async function del(endpoint, token) {
     return response.data;
   } catch (error) {
     console.error("Error occurred during DELETE request:", error);
-    // throw error;
+    throw error; // Rethrow the error to handle it at the caller's level
   }
 }
 
 // Generic function for making UPDATE (PUT) requests
-
-async function update(endpoint, body, token) {
+export async function update(endpoint, body, token) {
   const config = {
     headers: token ? { Authorization: `${token}` } : undefined,
   };
@@ -88,8 +83,6 @@ async function update(endpoint, body, token) {
     return response.data;
   } catch (error) {
     console.error("Error occurred during UPDATE (PUT) request:", error);
-    // throw error;
+    throw error; // Rethrow the error to handle it at the caller's level
   }
 }
-
-module.exports = { get, post, del, update };
