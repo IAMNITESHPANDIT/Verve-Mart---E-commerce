@@ -18,7 +18,7 @@ const validationSchema = Yup.object().shape({
     .required("Phone number is required"),
 });
 
-const Registration = () => {
+const Signup = () => {
   const initialValues = {
     name: "",
     email: "",
@@ -130,4 +130,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default Signup;

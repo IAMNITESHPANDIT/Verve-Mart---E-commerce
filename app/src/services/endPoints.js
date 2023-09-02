@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.REACT_APP_BASE_URL;
+export const BASE_URL = `http://192.168.198.161:3000/`;
 
 export const LOGIN = "auth/login";
 
