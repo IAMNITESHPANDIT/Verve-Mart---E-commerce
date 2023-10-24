@@ -1,51 +1,49 @@
-//import { Payment } from "../sequelize/index";
-const { Payment } = require("../sequelize/index");
+const { Payment, cartItem } = require("../sequelize/index");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // Process payment
 exports.addPayment = async (req, res) => {
   try {
-    const { amount, token, currency, productId, addressId } = req.body;
+    const { amount, token, currency, productId, addressId, quantity } =
+      req.body;
     const userId = req.user.userId;
 
-    // Generate the orderId
-    const orderId = generateOrderId();
-
-    // Create a charge using Stripe
+    // Create a payment intent using Stripe
     const paymentIntent = await stripe.paymentIntents.create({
-      description: "Software development services",
-      shipping: {
-        name: "Jenny Rosen",
-        address: {
-          line1: "510 Townsend St",
-          postal_code: "98140",
-          city: "San Francisco",
-          state: "CA",
-          country: "US",
-        },
-      },
       amount: amount,
       currency: currency,
       payment_method_types: ["card"],
+      payment_method_data: {
+        type: "card",
+        card: {
+          token: token,
+        },
+      },
+      confirm: true,
     });
+
+    // Retrieve the PaymentMethod associated with the PaymentIntent
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      paymentIntent.payment_method
+    );
 
     // Save the payment details in the database
     const paymentData = {
       orderId: generateOrderId(),
-      amount: amount,
-      // paymentId: paymentIntent.id,
-      cardLastFour:
-        paymentIntent.charges?.data[0]?.payment_method_details.card.last4 ||
-        "2344",
+      amount: removLastTwoDigits(amount),
+      paymentId: paymentIntent.id,
+      cardLastFour: paymentMethod.card.last4,
       userId: userId,
       productId: productId,
       addressId: addressId,
+      quantity: quantity,
     };
 
     // Use the createPayment method from the model to create a new payment record
-    const data = await Payment.create(paymentData);
-
-    res.status(200).json({ message: "Payment successful", data: data });
+    const data = await Payment.createPayment(paymentData);
+    res.status(200).json({ message: "Payment successfull", data: data });
+    await cartItem.destroy({ where: { itemId: productId } });
+    return;
   } catch (error) {
     console.log("Error processing payment: ", error);
     res.status(500).json({ error: "Failed to process payment" });
@@ -64,4 +62,8 @@ function generateOrderId() {
   const orderId = randomString + timestamp;
 
   return orderId;
+}
+
+function removLastTwoDigits(amount) {
+  return (amount / 100).toFixed(0);
 }

@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const DB_CONNECTION_URL = "postgres://nitesh.p:wzSIaRZ6WTG5@ep-broken-wildflower-18580618-pooler.us-east-2.aws.neon.tech/neondb";
+const DB_CONNECTION_URL = process.env.DB_CONNECTION_URL || '';
 
 const sequelize = new Sequelize(DB_CONNECTION_URL, {
   dialect: 'postgres',

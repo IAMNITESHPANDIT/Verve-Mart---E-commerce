@@ -2,6 +2,7 @@ import "./header.style.scss";
 import Logo from "../../assest/images/logo.png";
 import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const getLoggedInUserDetails = () => {
   return sessionStorage.getItem("USER_DETAIL")
@@ -14,8 +15,10 @@ const Header = () => {
     ? JSON.parse(sessionStorage.getItem("USER_DETAIL") || "")
     : {};
 
-  const navigateLogin = () => {
-    navigate("/Login");
+  const cart: any = useSelector((state: any) => state.cart.CART_ITEMS);
+
+  const navigateScreen = (url?: any) => {
+    navigate(`${url}`);
     return;
   };
 
@@ -24,7 +27,11 @@ const Header = () => {
       <Container>
         <Row className="align-items-center">
           <Col sm={12} md={3} className="verve-header__logo">
-            <img src={Logo} alt="Verve Logo" />
+            <img
+              src={Logo}
+              alt="Verve Logo"
+              onClick={() => navigateScreen(`/Dashboard`)}
+            />
           </Col>
           <Col sm={12} md={6} className="verve-header__search">
             <div className="input-group">
@@ -44,26 +51,46 @@ const Header = () => {
                 <span className="option-line-one">
                   Hello,
                   {data?.name ? (
-                    data?.name
+                    <span onClick={() => navigateScreen(`/profile`)}>
+                      {data?.name}
+                    </span>
                   ) : (
-                    <span onClick={() => navigateLogin()}> Sign in</span>
+                    <span onClick={() => navigateScreen(`/Login`)}>
+                      {" "}
+                      Sign in
+                    </span>
                   )}
                 </span>
-                <span className="option-line-two">Account &amp; Lists</span>
+                <span
+                  className="option-line-two"
+                  onClick={() => navigateScreen(`/profile`)}
+                >
+                  Account &amp; Lists
+                </span>
               </div>
               {data?.name && (
                 <>
                   <div className="verve-header__nav-option">
                     <span className="option-line-one">Returns</span>
-                    <span className="option-line-two">&amp; Orders</span>
+                    <span
+                      className="option-line-two"
+                      onClick={() => navigateScreen(`/orders`)}
+                    >
+                      &amp; Orders
+                    </span>
                   </div>
-                  <div className="verve-header__nav-option">
+                  {/* <div className="verve-header__nav-option">
                     <span className="option-line-one">Your</span>
                     <span className="option-line-two">Prime</span>
-                  </div>
+                  </div> */}
                   <div className="verve-header__nav-cart">
-                    <span className="cart-count">0</span>
-                    <span className="cart-icon">&#x1F6D2;</span>
+                    <span className="cart-count">{cart.length}</span>
+                    <span
+                      className="cart-icon"
+                      onClick={() => navigateScreen(`/cart`)}
+                    >
+                      &#x1F6D2;
+                    </span>
                   </div>
                 </>
               )}

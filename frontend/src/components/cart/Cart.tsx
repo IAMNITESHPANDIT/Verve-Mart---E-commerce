@@ -7,9 +7,12 @@ import CustomButton from "../CustomButton/CustomButton";
 import "./card.style.scss";
 import { useState, useEffect } from "react";
 import { FaLessThan, FaGreaterThan } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { addCartItems } from "../../store/reducers/cart";
 const CartList = (props: any) => {
   const [cartItems, setCartItems] = useState<any>([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleDecrement = (id: string, quantity: number) => {
     if (quantity <= 1) {
@@ -84,6 +87,7 @@ const CartList = (props: any) => {
         sessionStorage.getItem("AUTH_TOKEN") || ""
       );
       setCartItems(response.data);
+      dispatch(addCartItems(response.data));
     } catch (error) {
       console.log(error);
     }

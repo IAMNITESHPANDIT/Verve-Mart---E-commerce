@@ -52,7 +52,7 @@ const AddressForm: React.FC = () => {
           street: values.street,
           country: "India",
           state: values.state,
-          dist: values.dist,
+          dist: values.district,
           pincode: values.pinCode,
           userId: user.userId,
           phoneNumber: values.phoneNumber,

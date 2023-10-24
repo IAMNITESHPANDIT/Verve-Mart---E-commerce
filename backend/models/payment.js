@@ -1,8 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Payment = sequelize.define("Payment", {
     paymentId: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.STRING,
       primaryKey: true,
     },
     orderId: {
@@ -29,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     addressId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    quantity: {
       type: DataTypes.STRING,
       allowNull: false,
     },

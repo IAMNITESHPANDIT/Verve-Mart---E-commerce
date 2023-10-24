@@ -16,9 +16,8 @@ exports.getAllItems = async (req, res) => {
 
 exports.getItemById = async (req, res) => {
   try {
-    const itemId = req.params.id;
-    const user = req.user;
-    const item = await Item.findOne({ where: { id: itemId, UserId: user.id } });
+    const itemId = req.body.itemId;
+    const item = await Item.findOne({ where: { itemId: itemId } });
 
     if (!item) {
       return res.status(404).json({ error: "Item not found" });
@@ -187,8 +186,9 @@ exports.fetchExistingCartItems = async (req, res) => {
 
 // Add item to cart
 exports.addItemToCart = async (req, res) => {
+  const userId = req.user.userId;
   try {
-    const { itemId, userId } = req.body;
+    const { itemId } = req.body;
 
     const item = await Item.findOne({
       where: {

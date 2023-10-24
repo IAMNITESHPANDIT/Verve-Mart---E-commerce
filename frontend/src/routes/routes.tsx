@@ -10,6 +10,9 @@ import CategoryItems from "../pages/category-items/CategoryItems";
 import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
 import CartList from "../components/cart/Cart";
+import OrderPage from "../pages/order/Orders";
+import ProductOverview from "../pages/product-detail/ProductOverview";
+import ProfileSection from "../components/profile/Profile";
 import Registration from "../components/signup/Registration";
 
 function RoutePath() {
@@ -41,6 +44,15 @@ function RoutePath() {
         ></Route>
 
         <Route
+          path="/Register"
+          element={
+            <PublicRoute isVerified={isVerified} redirectPath="/Dashboard">
+              <Registration />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
           path="/Dashboard"
           element={
             <PublicRoute isVerified={false} redirectPath="/Dashboard">
@@ -54,6 +66,15 @@ function RoutePath() {
           element={
             <PublicRoute isVerified={false} redirectPath="/Dashboard">
               <CategoryItems />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="item/:itemName/:itemId"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <ProductOverview />
             </PublicRoute>
           }
         ></Route>
@@ -84,12 +105,22 @@ function RoutePath() {
             </ProtectedRoute>
           }
         ></Route>
-         <Route
-          path="/register"
+
+        <Route
+          path="/orders"
           element={
-            <PublicRoute isVerified={false} redirectPath="/Dashboard">
-              <Registration />
-            </PublicRoute>
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <OrderPage />
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
+              <ProfileSection setSigninStatus={setSigninStatus} />
+            </ProtectedRoute>
           }
         ></Route>
       </Routes>
