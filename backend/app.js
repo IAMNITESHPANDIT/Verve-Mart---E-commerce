@@ -31,7 +31,7 @@ app.use(express.json());
 // CORS setup: Allow requests from localhost
 app.use(
   cors({
-    origin: "http://localhost:3000", // Replace with the origin of your frontend application
+    origin: "*", // Replace with the origin of your frontend application
     credentials: true, // Enable cookies and credentials (if needed)
   })
 );
