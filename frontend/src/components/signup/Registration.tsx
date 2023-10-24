@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import "./signup.style.scss";
+import { post } from "../../services/networkCalls";
 
 interface SignupFormValues {
   name: string;
@@ -30,8 +31,18 @@ const Registration: React.FC = () => {
       .required("Phone number is required"),
   });
 
-  const handleSubmit = (values: SignupFormValues) => {
-    // Handle form submission here
+  const handleSubmit = async (values: SignupFormValues) => {
+    try {
+      const response: any = await post("auth/register", {
+        name: values.name,
+        phoneNumber: values.phoneNumber,
+        email: values.email,
+        password: values.password,
+      });
+      console.log("response", response.data);
+    } catch (error) {
+      console.log(error);
+    }
     console.log(values);
   };
 

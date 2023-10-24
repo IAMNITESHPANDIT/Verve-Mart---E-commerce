@@ -10,6 +10,7 @@ import CategoryItems from "../pages/category-items/CategoryItems";
 import Payment from "../pages/payment/Payment";
 import AddressForm from "../pages/address/Address";
 import CartList from "../components/cart/Cart";
+import Registration from "../components/signup/Registration";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -81,6 +82,14 @@ function RoutePath() {
             <ProtectedRoute isVerified={isVerified} redirectPath="/Login">
               <CartList />
             </ProtectedRoute>
+          }
+        ></Route>
+         <Route
+          path="/register"
+          element={
+            <PublicRoute isVerified={false} redirectPath="/Dashboard">
+              <Registration />
+            </PublicRoute>
           }
         ></Route>
       </Routes>

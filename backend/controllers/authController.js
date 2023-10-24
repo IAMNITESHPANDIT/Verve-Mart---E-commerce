@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { User } = require("../sequelize/index");
-require("dotenv").config();
-const jwtSecret = process.env.JWT_SECRET;
+require('dotenv').config();
+
+const jwtSecret = process.env.JWT_SECRET || 'eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTY5ODE0MzkyOSwiaWF0IjoxNjk4MTQzOTI5fQ.orn4ZTshEuQrTHMsOVjHdnS137DjhoZVeKcf_NrL9yc';
 
 //Login and Register role with password - admin
 
@@ -143,10 +144,15 @@ exports.signupUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    console.log("jwtSecret", jwtSecret)
+
     // Generate JWT token
-    const token = jwt.sign({ userId: user.id }, jwtSecret, {
+    const token = jwt.sign({ userId: user?.id }, jwtSecret, {
       expiresIn: "1h",
     });
+
+    console.log("token****", token)
+
 
     // Return the created user and token
     res.status(201).json({ user, token });
