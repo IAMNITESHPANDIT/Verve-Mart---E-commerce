@@ -29,12 +29,10 @@ const PORTNUMBER = process.env.PORT_NUMBER || 4000;
 app.use(express.json());
 
 // CORS setup: Allow requests from localhost
-app.use(
-  cors({
-    origin: "*", // Replace with the origin of your frontend application
-    credentials: true, // Enable cookies and credentials (if needed)
-  })
-);
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 // Routes
 
