@@ -2,7 +2,6 @@ const { Slider } = require("../sequelize");
 
 // Get all sliders
 exports.getSliders = async (req, res) => {
-  console.log("method exectued");
   try {
     const sliders = await Slider.findAll({ order: [["order", "ASC"]] });
     res.json({ data: sliders });

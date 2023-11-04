@@ -16,7 +16,7 @@ import { ToastOnSuccess } from "../../utils/toast/message";
 
 import AddressRadio from "./radios/AddressRadio";
 
-import CustomButton from "../../components/customButton/CustomButton";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -43,7 +43,6 @@ const AddressForm: React.FC = () => {
   const user: any = JSON.parse(sessionStorage.getItem("USER_DETAIL") || "{}");
 
   const handleSubmit = async (values: any, { setSubmitting }: any) => {
-    console.log("dev------>", values);
     try {
       setSubmitting(false);
       const response: any = await post(

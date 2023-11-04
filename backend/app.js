@@ -6,8 +6,6 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors());
-
 const { sequelize } = require("./sequelize/index");
 
 const itemRoutes = require("./routes/itemRoutes");
@@ -29,6 +27,12 @@ const categoryRoute = require("./routes/categoryRoute");
 const PORTNUMBER = process.env.PORT_NUMBER || 4000;
 
 app.use(express.json());
+
+// CORS setup: Allow requests from localhost
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 // Routes
 

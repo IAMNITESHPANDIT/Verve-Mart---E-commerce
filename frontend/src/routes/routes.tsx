@@ -3,7 +3,7 @@ import Login from "../components/login/Login";
 import { useState } from "react";
 import PublicRoute from "./PublicRoute";
 import ProtectedRoute from "./ProtectedRoute";
-import Dashboard from "../components/dashboard/Dashboard";
+import Dashboard from "../components/Dashboard/Dashboard";
 import Header from "../components/header/Header";
 import Footer from "../components/footer/Footer";
 import CategoryItems from "../pages/category-items/CategoryItems";
@@ -13,6 +13,7 @@ import CartList from "../components/cart/Cart";
 import OrderPage from "../pages/order/Orders";
 import ProductOverview from "../pages/product-detail/ProductOverview";
 import ProfileSection from "../components/profile/Profile";
+import Registration from "../components/signup/Registration";
 
 function RoutePath() {
   const navigate = useNavigate();
@@ -38,6 +39,15 @@ function RoutePath() {
           element={
             <PublicRoute isVerified={isVerified} redirectPath="/Dashboard">
               <Login setSigninStatus={setSigninStatus} />
+            </PublicRoute>
+          }
+        ></Route>
+
+        <Route
+          path="/Register"
+          element={
+            <PublicRoute isVerified={isVerified} redirectPath="/Dashboard">
+              <Registration />
             </PublicRoute>
           }
         ></Route>

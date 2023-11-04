@@ -1,13 +1,16 @@
 const { Sequelize } = require("sequelize");
 
-const DB_NAME = process.env.DB_NAME;
-const DB_USER = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_DIALECT = process.env.DB_DIALECT;
+const DB_CONNECTION_URL = process.env.DB_CONNECTION_URL || '';
 
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
-  host: "localhost",
-  dialect: DB_DIALECT,
+const sequelize = new Sequelize(DB_CONNECTION_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Use this option if you encounter self-signed certificate issues
+    },
+  },
+  logging: false, // Disable logging SQL queries (optional)
 });
 
 async function testDatabaseConnection() {
@@ -21,11 +24,8 @@ async function testDatabaseConnection() {
 
 testDatabaseConnection();
 
-// module.exports = sequelize;
 module.exports = {
   sequelize,
-  DB_NAME,
-  DB_USER,
-  DB_PASSWORD,
-  DB_DIALECT,
+  DB_CONNECTION_URL
 };
+

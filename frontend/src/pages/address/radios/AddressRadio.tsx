@@ -1,4 +1,4 @@
-import CustomButton from "../../../components/customButton/CustomButton";
+import CustomButton from "../../../components/CustomButton/CustomButton";
 import "./addressRadio.style.scss";
 const AddressRadio = (props: any) => {
   return (

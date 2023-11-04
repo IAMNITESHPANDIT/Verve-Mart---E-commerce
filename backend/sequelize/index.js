@@ -15,17 +15,16 @@ const slider = require("../models/slider");
 const address = require("../models/address");
 const category = require("../models/category");
 
-// Create an instance of Sequelize
-
-const sequelize = new Sequelize(
-  databaseConfig.DB_NAME,
-  databaseConfig.DB_USER,
-  databaseConfig.DB_PASSWORD,
-  {
-    host: "localhost",
-    dialect: databaseConfig.DB_DIALECT,
-  }
-);
+const sequelize = new Sequelize(databaseConfig.DB_CONNECTION_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false, // Use this option if you encounter self-signed certificate issues
+    },
+  },
+  logging: false, // Disable logging SQL queries (optional)
+});
 
 // Initialize the models
 const User = UserModel(sequelize, Sequelize);

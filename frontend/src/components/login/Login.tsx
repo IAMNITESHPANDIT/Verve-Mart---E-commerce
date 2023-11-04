@@ -36,7 +36,8 @@ const Login: React.FC<iLogin> = ({ setSigninStatus }) => {
     { setSubmitting }: any
   ) => {
     try {
-      const data: any = await post(`${BASE_URL}${LOGIN}`, values);
+      console.log("Submit", Login)
+      const data: any = await post(`${LOGIN}`, values);
       sessionStorage.setItem("AUTH_TOKEN", data.data.token);
       sessionStorage.setItem("USER_DETAIL", JSON.stringify(data.data));
       ToastOnSuccess(data.message);
